@@ -25,10 +25,11 @@ Resources used for this lab come from the materials provided in the AIT 590 cour
 - Timer examples understood from: https://stackoverflow.com/questions/15528939/python-3-timed-input
 """
 #import and initialize libraries
-import random, re, nltk, os, sys, logging
+import random, re, nltk, os, sys, logging, time
 import pandas as pd 
 from nltk.tokenize import word_tokenize
 from datetime import datetime
+from threading import Thread
 
 #Creates a log file of all user responses will rewrite the log file every time code executed.
 #https://stackoverflow.com/questions/38409450/logging-to-python-file-doesnt-overwrite-file-when-using-the-mode-w-argument-t
@@ -88,7 +89,7 @@ def start_conversation():
     print(bot_formatted_name + 'Nice to meet you, {}! To end the session, type "END SESSION". For help, type "HELP".'.format(name))  
     
     new_user = input(bot_formatted_name + 'Is this your first time interacting with me?\nType "Yes" or "No"\n')   # ask if first time     
-    
+
     
     while not (new_user.lower() == 'yes' or new_user.lower() == 'no'):
         new_user = input(bot_formatted_name + 'Invalid response. I need to know if this is your first time using IRIS?\n')   # ask for their name and saves inputted value to userName variable
@@ -97,7 +98,8 @@ def start_conversation():
         get_help()
     elif new_user.lower() == 'no':
         print(bot_formatted_name + 'Great! If you need assistance please type in "HELP".')
-
+    #2 second delay - https://www.guru99.com/python-time-sleep-delay.html
+    time.sleep(2)
     print('Let\'s get started!\n')
     print('----------------------\n')
     return name
@@ -106,7 +108,7 @@ def start_conversation():
 def get_help():
     print('\n' + bot_formatted_name + 'Welcome my job here is to help you practice for your interview.')
     print(bot_formatted_name + 'I will ask several questions from various categories. You will have 90 seconds to respond with your answer.')
-
+    
 
 
 
@@ -150,6 +152,7 @@ def not_understood_responses():
         'I\'m a little confused... please try saying that again ...',
         'I am lost. Please try a explaining that again.']
    
+        
     iris_response(len(choices)-1, choices)    
 
 # loads the questions from the CSV
@@ -170,6 +173,13 @@ def choose_question(dataframe):
     
     return ques, cat
 
+#Iris response when user is idle for 90 seconds - Will update response later
+def idle_check():
+    time.sleep(90)
+    if answer != None:
+        return
+    print('HURRY UP')
+    
 
 #----------------------------------------------
 # start of code, end of functions
@@ -203,11 +213,15 @@ while running:
     #I actually don't want to print the category but let's keep it for now to check 
     print('{}The category is: {}'.format(bot_formatted_name, category))
     print('{}Question {}:{}'.format(bot_formatted_name, question_counter, question))
+    #Start timining how long user takes to respond after question has been printed out.
+    Thread(target = idle_check).start()
+    
     #logs the questions iris is printing
     logging.debug('{}The category is: {}'.format(bot_formatted_name, category))
     logging.debug('{}Question {}:{}'.format(bot_formatted_name, question_counter, question))
-    # request input from the user, append the formatted user name to the front of the console print, and process the input
-    response = process_input(input(formattedName))  # save response from input
+    #records user's responses and processes it.
+    response = process_input(input(formattedName))
+    #logging user's response into log file.
     log_response = logging.debug('{}{}'.format(formattedName, response))
 
     # tokenize the words
