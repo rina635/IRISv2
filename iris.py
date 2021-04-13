@@ -37,6 +37,7 @@ log_filename = 'user_response.log'
 logging.basicConfig(filename= log_filename, level = logging.DEBUG, format = '%(message)s')
 handler = logging.FileHandler(log_filename, 'w+')
 
+
 # global variables
 bot_name = 'IRIS'
 #Name used in chat
@@ -74,7 +75,7 @@ def start_conversation():
     # start of program and logic
     # first interaction with user
     print('{}{}, I am {} the Instructive Response Interview Simulator. Here to help you prepare for your next interview!'.format(bot_formatted_name, greeting(), bot_name))
-
+    
     
     # save the users name as an input
     name = input(bot_formatted_name + 'Before we begin, what is your name?\n')   # ask for their name and saves inputted value to userName variable
@@ -199,10 +200,12 @@ while running:
 
     question, category = choose_question(questions_df)
     question_counter = question_counter + 1
-    #I actually don't want to print the category but let's keep it for now to check
+    #I actually don't want to print the category but let's keep it for now to check 
     print('{}The category is: {}'.format(bot_formatted_name, category))
     print('{}Question {}:{}'.format(bot_formatted_name, question_counter, question))
-    
+    #logs the questions iris is printing
+    logging.debug('{}The category is: {}'.format(bot_formatted_name, category))
+    logging.debug('{}Question {}:{}'.format(bot_formatted_name, question_counter, question))
     # request input from the user, append the formatted user name to the front of the console print, and process the input
     response = process_input(input(formattedName))  # save response from input
     log_response = logging.debug(response)
