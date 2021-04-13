@@ -208,7 +208,7 @@ while running:
     logging.debug('{}Question {}:{}'.format(bot_formatted_name, question_counter, question))
     # request input from the user, append the formatted user name to the front of the console print, and process the input
     response = process_input(input(formattedName))  # save response from input
-    log_response = logging.debug(response)
+    log_response = logging.debug('{}{}'.format(formattedName, response))
 
     # tokenize the words
     tokens = word_tokenize(response)
