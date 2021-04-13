@@ -32,6 +32,7 @@ from datetime import datetime
 
 #Creates a log file of all user responses will rewrite the log file every time code executed.
 #https://stackoverflow.com/questions/38409450/logging-to-python-file-doesnt-overwrite-file-when-using-the-mode-w-argument-t
+#https://www.youtube.com/watch?v=-ARI4Cz-awo&t=616s
 log_filename = 'user_response.log'
 logging.basicConfig(filename= log_filename, level = logging.DEBUG, format = '%(message)s')
 handler = logging.FileHandler(log_filename, 'w+')
@@ -83,7 +84,7 @@ def start_conversation():
         name = input(bot_formatted_name + 'Invalid response. I need to know how to address you. What is your name?\n')   # ask for their name and saves inputted value to userName variable
     
     #Provides instructions to user.
-    print(bot_formatted_name + 'Nice to meet you, {}! To end the session, type "END SESSION". For help, type "HELP". For tips, type "TIPS".'.format(name))  
+    print(bot_formatted_name + 'Nice to meet you, {}! To end the session, type "END SESSION". For help, type "HELP".'.format(name))  
     
     new_user = input(bot_formatted_name + 'Is this your first time interacting with me?\nType "Yes" or "No"\n')   # ask if first time     
     
@@ -105,9 +106,7 @@ def get_help():
     print('\n' + bot_formatted_name + 'Welcome my job here is to help you practice for your interview.')
     print(bot_formatted_name + 'I will ask several questions from various categories. You will have 90 seconds to respond with your answer.')
 
-# calls the tips for using the program
-def get_tips():
-    print('\n' + bot_formatted_name + 'Here are some tips for doing your best. (need to add***')
+
 
 
 
@@ -219,9 +218,6 @@ while running:
     elif re.match(r'HELP', response, re.IGNORECASE):
         get_help()
 
-    # match if tips is requested
-    elif re.match(r'TIPS', response, re.IGNORECASE):
-        get_tips()
 
     # exit the while loop if the user typed end session or END SESSION 
     elif response == 'end session' or response == 'END SESSION':
@@ -237,4 +233,4 @@ while running:
 # 2. asks if it is first time (if yes then prints instructions, if no then continue. Anything else, reprompts)
 # 3. loads questions into a dataframe (uses working directory for path)
 # 4. says lets get started and presents question
-# 5. checks if empty string submitted, HELP, TIPS or END selected. If none, then thanks user for entering response, and asks next question
+# 5. checks if empty string submitted, HELP or END selected. If none, then thanks user for entering response, and asks next question
