@@ -175,9 +175,9 @@ def choose_question(dataframe):
     
     return ques, cat
 
-#Iris response when user is idle for 90 seconds.
+#Iris response when user is idle for 2 minutes.
 def idle_check():
-    time.sleep(5)
+    time.sleep(120)
     if answer != None:
         print('\n')
     elif answer == 'end session':
