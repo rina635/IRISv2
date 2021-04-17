@@ -38,7 +38,7 @@ log_filename = 'user_response.log'
 logging.basicConfig(filename= log_filename, level = logging.DEBUG, format = '%(message)s')
 handler = logging.FileHandler(log_filename, 'w+')
 
-
+ 
 # global variables
 bot_name = 'IRIS'
 #Name used in chat
@@ -106,9 +106,11 @@ def start_conversation():
 
 # calls the instructions for using the program 
 def get_help():
-    print('\n' + bot_formatted_name + 'Welcome my job here is to help you practice for your interview.')
-    print(bot_formatted_name + 'I will ask several questions from various categories. You will have 90 seconds to respond with your answer.')
-    
+    print('\n' + bot_formatted_name + '''Welcome my job here is to help you practice for your interview by providing unlimited number of questions.
+     Each question is graded on a scale from 1-10 and you will have up to 2 minutes to respond with your answers.
+     After 2 minutes has been reached there will be a '*' printed to indicate, but you will still be able to respond.
+     Exceeding 2 minutes will result in a 2 point infraction.\n''')
+    time.sleep(5)
 
 
 
@@ -167,18 +169,22 @@ def load_questions(file):
 def choose_question(dataframe):
     rand_numb = randomNumbGen(dataframe.index.max())   
     
-    ques = dataframe.at[rand_numb, 'question_text']
-    cat = dataframe.at[rand_numb, 'category']
+    ques = dataframe.at[rand_numb, 'Question']
+    cat = dataframe.at[rand_numb, 'Category']
     
     
     return ques, cat
 
-#Iris response when user is idle for 90 seconds - Will update response later
+#Iris response when user is idle for 90 seconds.
 def idle_check():
-    time.sleep(90)
+    time.sleep(5)
     if answer != None:
-        return
-    print('HURRY UP')
+        print('\n')
+    elif answer == 'end session':
+        print('\n')
+    elif answer == 'END SESSION':   
+        print('\n')
+    print('*')
     
 
 #----------------------------------------------
@@ -218,7 +224,7 @@ while running:
     
     #logs the questions iris is printing
     logging.debug('{}The category is: {}'.format(bot_formatted_name, category))
-    logging.debug('{}Question {}:{}'.format(bot_formatted_name, question_counter, question))
+    logging.debug('{}Question {}:{}\n'.format(bot_formatted_name, question_counter, question))
     #records user's responses and processes it.
     response = process_input(input(formattedName))
     #logging user's response into log file.
