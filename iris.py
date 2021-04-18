@@ -38,7 +38,6 @@ log_filename = 'user_response.log'
 logging.basicConfig(filename= log_filename, level = logging.DEBUG, format = '%(message)s')
 handler = logging.FileHandler(log_filename, 'w+')
 
- 
 # global variables
 bot_name = 'IRIS'
 #Name used in chat
@@ -108,12 +107,12 @@ def start_conversation():
 def get_help():
     print('\n' + bot_formatted_name + '''Welcome my job here is to help you practice for your interview by providing unlimited number of questions.
      Each question is graded on a scale from 1-10 and you will have up to 2 minutes to respond with your answers.
-     After 2 minutes has been reached there will be a '*' printed to indicate, but you will still be able to respond.
+     After 2 minutes has been reached there will be a '*' denoted on the log, but you will still be able to respond.
      Exceeding 2 minutes will result in a 2 point infraction.\n''')
     time.sleep(5)
 
 
-
+#DO WE NEED THESE THREE FUNCTIONS AT ALL?
 
 # clean the input submitted
 def process_input(user_input):
@@ -184,7 +183,9 @@ def idle_check():
         print('\n')
     elif answer == 'END SESSION':   
         print('\n')
-    print('*')
+#Time exceeded character won't print to console but will be logged.
+    x = '*'
+    logging.debug(x) 
     
 
 #----------------------------------------------
@@ -203,7 +204,6 @@ dname = os.path.dirname(abspath) + '/questions.csv'
 
 # load questions from the CSV file and save them to a data frame
 questions_df = load_questions(dname)
-#print(questions_df)
 
 # start the conversation
 userName = start_conversation()
@@ -225,10 +225,11 @@ while running:
     #logs the questions iris is printing
     logging.debug('{}The category is: {}'.format(bot_formatted_name, category))
     logging.debug('{}Question {}:{}\n'.format(bot_formatted_name, question_counter, question))
+
     #records user's responses and processes it.
     response = process_input(input(formattedName))
-    #logging user's response into log file.
-    log_response = logging.debug('{}{}'.format(formattedName, response))
+    #logging user's response into log file without their name.
+    log_response = logging.debug('{}'.format(response))
 
     # tokenize the words
     tokens = word_tokenize(response)
@@ -249,11 +250,3 @@ while running:
         
     else:
         print('\n' + bot_formatted_name + 'Thanks for answering! Here is your next question:')
-
-
-# currently completed logic
-# 1. asks for user name (if empty reprompts)
-# 2. asks if it is first time (if yes then prints instructions, if no then continue. Anything else, reprompts)
-# 3. loads questions into a dataframe (uses working directory for path)
-# 4. says lets get started and presents question
-# 5. checks if empty string submitted, HELP or END selected. If none, then thanks user for entering response, and asks next question
