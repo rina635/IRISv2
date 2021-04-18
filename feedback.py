@@ -11,7 +11,8 @@ from nltk import pos_tag
 import pandas as pd
 import csv
 from gensim.summarization.summarizer import summarize
-from gensim.summarization import keywordss
+from gensim.summarization import keywords
+from nltk import sent_tokenize
 
 nlp = spacy.load('en_core_web_sm')
 
@@ -68,4 +69,14 @@ for key in qa_dictionary:
 #Returns true or false if string is in answer but has to be the entire string
 #doesn't do substring bc one of answers only had this will print True
 any(v == 'blah ba' for v in qa_dictionary.values())
-    
+
+#basic scoring method for answer lists - Need to revise to add as value to dicitonary
+len_score = []
+for item in answers_list:
+    sent = sent_tokenize(item)
+    if len(sent) > 3:
+        s = 2
+        len_score.append(s)
+    else:
+        s = -2
+        len_score.append(s)
