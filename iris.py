@@ -127,47 +127,15 @@ def process_input(user_input):
     
     return user_input
 
-# function that is used to remove contractions
-def decontracted(phrase):
-    # specific
-    phrase = re.sub(r"won\'t", "will not", phrase)
-    phrase = re.sub(r"can\'t", "can not", phrase)
-
-    # general
-    phrase = re.sub(r"n\'t", " not", phrase)
-    phrase = re.sub(r"\'re", " are", phrase)
-    phrase = re.sub(r"\'d", " would", phrase)
-    phrase = re.sub(r"\'ll", " will", phrase)
-    phrase = re.sub(r"\'t", " not", phrase)
-    phrase = re.sub(r"\'ve", " have", phrase)
-    phrase = re.sub(r"\'m", " am", phrase)
-    phrase = re.sub(r"he\'s", " is", phrase)
-    phrase = re.sub(r"she\'s", " is", phrase)
-    
-    return phrase
-
-# function to display generic questions
-def not_understood_responses():       
-    choices = [
-        'I\'m not sure I understand. Can you explain that in a different way?',
-        'I\'m a little confused... please try saying that again ...',
-        'I am lost. Please try a explaining that again.']
-   
-        
-    iris_response(len(choices)-1, choices)    
 
 # loads the questions from the CSV
 def load_questions(file):
-    
-    # Read data from file 'filename.csv' 
-    # (in the same directory that your python process is based)
-    # Control delimiters, rows, column names with read_csv (see later) 
     data = pd.read_csv(file)     
     return data
 
 def choose_question(dataframe):
     rand_numb = randomNumbGen(dataframe.index.max())   
-    
+    #Need to stop it from picking same numbers during the session.
     ques = dataframe.at[rand_numb, 'Question']
     cat = dataframe.at[rand_numb, 'Category']
     
@@ -176,7 +144,7 @@ def choose_question(dataframe):
 
 #Iris response when user is idle for 2 minutes.
 def idle_check():
-    time.sleep(120)
+    time.sleep(5)
     if answer != None:
         print('\n')
     elif answer == 'end session':
@@ -216,13 +184,13 @@ while running:
 
     question, category = choose_question(questions_df)
     question_counter = question_counter + 1
-    #I actually don't want to print the category but let's keep it for now to check 
+    
     print('{}The category is: {}'.format(bot_formatted_name, category))
     print('{}Question {}:{}'.format(bot_formatted_name, question_counter, question))
     #Start timining how long user takes to respond after question has been printed out.
     Thread(target = idle_check).start()
     
-    #logs the questions iris is printing
+    #logs IRIS Category and question declaration.
     logging.debug('{}The category is: {}'.format(bot_formatted_name, category))
     logging.debug('{}Question {}:{}\n'.format(bot_formatted_name, question_counter, question))
 
