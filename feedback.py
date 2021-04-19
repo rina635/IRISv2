@@ -18,8 +18,8 @@ nlp = spacy.load('en_core_web_sm')
 
 #Finds location of log file
 #https://stackoverflow.com/questions/33832184/open-a-log-extension-file-in-python
-#abspath = os.path.abspath(sys.argv[0])
-abspath = r'C:\Users\Ash\Python Files\Interview_Simulator'
+abspath = os.path.abspath(sys.argv[0])
+#abspath = r'C:\Users\Ash\Python Files\Interview_Simulator'
 for filename in os.listdir(abspath):
     if filename == 'user_response.log':
        f  = open(os.path.join(abspath, 'user_response.log'), "r")
@@ -51,6 +51,7 @@ answers_list = [item for item in interview if item not in all_iris]
 answers_list = list(filter(None,answers_list))
 #Removes * character - Final list of answers:
 answers = [ x for x in answers_list if "*" not in x ]
+answers = [ x for x in answers if "end session" not in x ]
 #Final list of questions asked.
 questions = q_search(interview)
 
@@ -58,8 +59,9 @@ questions = q_search(interview)
 interview_df = pd.DataFrame(list(zip(questions, answers)), columns = ['questions', 'answers'])
 #if user says end session delete row.
 interview_df = interview_df[interview_df.answers != 'end session']
-#Third column is the score, defaults to 0.
-interview_df['score'] = 6
+interview_df = interview_df[interview_df.answers != 'NumExpr defaulting to 4 threads.']
+#Third column is the score, defaults to 7.
+interview_df['score'] = 7
 
 #SEARCH FOR (*) DENOTING OVERTIME:
 ##https://stackoverflow.com/questions/36519939/using-index-with-a-list-that-has-repeated-elements  
@@ -79,6 +81,7 @@ def overtime_q(list):
 #https://stackoverflow.com/questions/3416401/removing-elements-from-a-list-containing-specific-characters
 all_overtime = overtime_q(interview)    
 all_overtime = [ x for x in all_overtime if "*" not in x ]
+all_overtime = [ x for x in all_overtime if "end session" not in x ]
 all_overtime = list(filter(None,all_overtime))
 
 #Remove IRIS: Question: from list - Clean so can search dictionary
@@ -106,8 +109,8 @@ interview_df.loc[interview_df.answers.isin(short_answers), 'score'] = interview_
 # uses spacy to identify entities, saves entitie text and label to a dictionary
 def get_ents(responses):
     entity ={}
-    
-    # loop through each answer, and save the entities from the text
+
+# loop through each answer, and save the entities from the text
     for i in range(0, len(answers)):
         doc = nlp(answers[i])
         for ent in doc.ents:
@@ -124,8 +127,8 @@ def get_ents(responses):
 def eval_ents(responses):
     accpetable_entity_dict = {}  # Create a new empty dictionary
     acceptable_entity_list = []  # Create a new empty list
-    no_entity = []
     
+
     # run the get_ents method to create a list of all entities
     all_entity = get_ents(responses)
     
@@ -135,28 +138,31 @@ def eval_ents(responses):
             accpetable_entity_dict[key] = value
             acceptable_entity_list.append(key)
 
-    # loop through the responses to isolate responses with no entities
-    for i in range(0, len(responses)):
-        for j in range(0, len(acceptable_entity_list)):
-            
-            # search for the entity within the sentence
-            if re.search(acceptable_entity_list[j], responses[i]):
-                # if an entity was found, but was added to the no_entity list earlier, try to remove it from the list
-                try:
-                    no_entity.remove(responses[i])
-                except ValueError:
-                    pass  
-                # if a entity is found in a sentence, no need to search for more entities in that sentence, break to next sentence
-                break
-            # check if a sentence is already in the cumulative list, dont do anything if true (otherwise duplicates sentences)
-            elif responses[i] in no_entity:
-                pass
-            # add the sentence to the cumulative list
-            else:
-                no_entity.append(responses[i])
+    no_entity = [item for item in answers if item not in acceptable_entity_list]
+    return no_entity
+'''
+# loop through the responses to isolate responses with no entities
+for i in range(0, len(answers)):
+    for j in range(0, len(acceptable_entity_list)):
+        
+        # search for the entity within the sentence
+        if re.search(acceptable_entity_list[j], answers[i]):
+            # if an entity was found, but was added to the no_entity list earlier, try to remove it from the list
+            try:
+                no_entity.remove(answers[i])
+            except ValueError:
+                pass  
+            # if a entity is found in a sentence, no need to search for more entities in that sentence, break to next sentence
+            break
+        # check if a sentence is already in the cumulative list, dont do anything if true (otherwise duplicates sentences)
+        elif answers[i] in no_entity:
+            pass
+        # add the sentence to the cumulative list
+        else:
+            no_entity.append(answers[i])
 
     return no_entity
-
+'''
 #Function iterates through all answers to see if user used at least 1 named entity, if they did it adds to the entity list
 #Need a list of entities the answer had to check if the length was at least 1.
 #But want a dictionary of answer and respective list of entities
