@@ -117,14 +117,6 @@ def get_help():
 # clean the input submitted
 def process_input(user_input):
     
-    user_input = user_input.lower()
-    
-    # switch contractions to non-contraction (I'm to I am)
-    #user_input = decontracted(user_input)
-    
-    # remove punctuation
-    user_input = re.sub(r'[^\w\s]', '', user_input)
-    
     return user_input
 
 
@@ -216,6 +208,4 @@ while running:
     elif response == 'end session' or response == 'END SESSION':
         running = False   # changes the running global variable to false to end the program
         print(bot_formatted_name + "Thanks for an amazing conversation!")
-        
-    else:
-        print('\n' + bot_formatted_name + 'Thanks for answering! Here is your next question:')
+
