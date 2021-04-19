@@ -120,7 +120,7 @@ def process_input(user_input):
     user_input = user_input.lower()
     
     # switch contractions to non-contraction (I'm to I am)
-    user_input = decontracted(user_input)
+    #user_input = decontracted(user_input)
     
     # remove punctuation
     user_input = re.sub(r'[^\w\s]', '', user_input)
@@ -195,7 +195,8 @@ while running:
     logging.debug('{}Question {}:{}\n'.format(bot_formatted_name, question_counter, question))
 
     #records user's responses and processes it.
-    response = process_input(input(formattedName))
+    #response = process_input(input(formattedName))
+    response = input(formattedName)
     #logging user's response into log file without their name.
     log_response = logging.debug('{}'.format(response))
 

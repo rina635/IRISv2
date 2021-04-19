@@ -10,15 +10,16 @@ import spacy
 from nltk import pos_tag
 import pandas as pd
 import csv
-from gensim.summarization.summarizer import summarize
-from gensim.summarization import keywords
+#from gensim.summarization.summarizer import summarize
+#from gensim.summarization import keywords
 from nltk import sent_tokenize
 import numpy as np
 nlp = spacy.load('en_core_web_sm')
 
 #Finds location of log file
 #https://stackoverflow.com/questions/33832184/open-a-log-extension-file-in-python
-abspath = os.path.abspath(sys.argv[0])
+#abspath = os.path.abspath(sys.argv[0])
+abspath = r'C:\Users\Ash\Python Files\Interview_Simulator'
 for filename in os.listdir(abspath):
     if filename == 'user_response.log':
        f  = open(os.path.join(abspath, 'user_response.log'), "r")
@@ -58,7 +59,7 @@ interview_df = pd.DataFrame(list(zip(questions, answers)), columns = ['questions
 #if user says end session delete row.
 interview_df = interview_df[interview_df.answers != 'end session']
 #Third column is the score, defaults to 0.
-interview_df['score'] = 0
+interview_df['score'] = 6
 
 #SEARCH FOR (*) DENOTING OVERTIME:
 ##https://stackoverflow.com/questions/36519939/using-index-with-a-list-that-has-repeated-elements  
@@ -102,25 +103,67 @@ for i in range(0, len(answers)):
 #2. SCORE - if user's answer is too short -2 from score again.
 interview_df.loc[interview_df.answers.isin(short_answers), 'score'] = interview_df['score'] - 2
 
+# uses spacy to identify entities, saves entitie text and label to a dictionary
+def get_ents(responses):
+    entity ={}
     
-#3. If user's answers used less than 1 named entity
-interview_df.loc[interview_df.answers.isin(no_ents), 'score'] = interview_df['score'] - 2
+    # loop through each answer, and save the entities from the text
+    for i in range(0, len(answers)):
+        doc = nlp(answers[i])
+        for ent in doc.ents:
+            x = (ent.text)
+            y = (ent.label_)
+            
+            # check to avoid duplicated keys
+            if x not in entity.keys():
+                entity[x] = y
+            
+    return entity
+
+# evaluates the sentences to see if an Entity is present. If a sentence does not have an entity, save it to list and return list
+def eval_ents(responses):
+    accpetable_entity_dict = {}  # Create a new empty dictionary
+    acceptable_entity_list = []  # Create a new empty list
+    no_entity = []
+    
+    # run the get_ents method to create a list of all entities
+    all_entity = get_ents(responses)
+    
+    # create an acceptable entity list with only desired entities (persons and organizations)
+    for key, value in all_entity.items():
+        if value == 'ORG' or value == 'PERSON':
+            accpetable_entity_dict[key] = value
+            acceptable_entity_list.append(key)
+
+    # loop through the responses to isolate responses with no entities
+    for i in range(0, len(responses)):
+        for j in range(0, len(acceptable_entity_list)):
+            
+            # search for the entity within the sentence
+            if re.search(acceptable_entity_list[j], responses[i]):
+                # if an entity was found, but was added to the no_entity list earlier, try to remove it from the list
+                try:
+                    no_entity.remove(responses[i])
+                except ValueError:
+                    pass  
+                # if a entity is found in a sentence, no need to search for more entities in that sentence, break to next sentence
+                break
+            # check if a sentence is already in the cumulative list, dont do anything if true (otherwise duplicates sentences)
+            elif responses[i] in no_entity:
+                pass
+            # add the sentence to the cumulative list
+            else:
+                no_entity.append(responses[i])
+
+    return no_entity
+
 #Function iterates through all answers to see if user used at least 1 named entity, if they did it adds to the entity list
 #Need a list of entities the answer had to check if the length was at least 1.
 #But want a dictionary of answer and respective list of entities
 #Want the output to be a list of the answers where user did not meet this criteria to decide which rows in the dataframe we need to subtract from.    
-def get_ents(answers):
-    entity = []
-    for i in range(0, len(answers)):
-        doc = nlp(answers[i])
-        for ent in doc.ents:
-            x = (ent.label_)
-            entity.append(x)   
-            
-    return entity
 
-def eval_ents():
-    no_ents = []
-    entity = get_ents()
-    if len(entity) > 1:
-        #put the list of answers into no_ents
+# evaluate the answers and return as a list
+no_ents = eval_ents(answers)
+
+#3. If user's answers used less than 1 named entity
+interview_df.loc[interview_df.answers.isin(no_ents), 'score'] = interview_df['score'] - 2
