@@ -5,16 +5,7 @@
 
 Final Assignment: Team 3 - Rafeef Baamer, Ashish Hingle, Rina Lidder, & Andy Nguyen
 
-#general logic
-# load all questions from csv file 
-# take in name, number of questions
-# start timer
-# pick a question from each category 
-# take in answer input 
-# if input > 90 seconds, ask if they want a hint
-# evaluate answer (NER, POS Tagging)
-# add question and answer to log file (whole conversation) 
-# exit and print final feedback
+
 
 Resources used for this lab come from the materials provided in the AIT 590 course materials.
 - Lecture powerpoints (AIT 590)
@@ -126,9 +117,9 @@ def choose_question(dataframe):
 
     return ques, cat
 
-#Iris response when user is idle for 2 minutes.
+#IRIS will log when the user has exceeded 2 minutes without a response with asterisk.
 def idle_check():
-    time.sleep(5)
+    time.sleep(120)
     if answer != None:
         print('\n')
     elif answer == 'end session':
@@ -146,7 +137,6 @@ def idle_check():
 
 #initialize the response and running variables
 response = ''
-running = True
 answer = None
 question_counter = 0
     
@@ -163,7 +153,7 @@ n = int(input('{}How many questions would you like for today? \nPlease select a 
 # Reformat the user's name for the chat.
 formattedName = userName + ": "
 
-# continue running while the program is running
+# Interview session will continue until the number of questions has been reached.
 while question_counter < n: 
     
     
