@@ -18,8 +18,8 @@ nlp = spacy.load('en_core_web_sm')
 
 #Finds location of log file
 #https://stackoverflow.com/questions/33832184/open-a-log-extension-file-in-python
-abspath = os.path.abspath(sys.argv[0])
-#abspath = r'C:\Users\Ash\Python Files\Interview_Simulator'
+#abspath = os.path.abspath(sys.argv[0])
+abspath = r'C:\Users\Ash\Python Files\Interview_Simulator'
 for filename in os.listdir(abspath):
     if filename == 'user_response.log':
        f  = open(os.path.join(abspath, 'user_response.log'), "r")
@@ -29,7 +29,6 @@ for filename in os.listdir(abspath):
 #Opens log file as a list
 with open('user_response.log') as file:
     interview = file.read().splitlines()
-
 
 #Whole interview session is everything before user requests to end the session
 def whole_interview(list):
@@ -43,8 +42,6 @@ def whole_interview(list):
             beg_index = 0
             whole = list[beg_index:end_index]
     return whole        
-    
- 
     
 #Searches Interview list to find all the questions IRIS asked during interview.
 def q_search(list):
@@ -83,6 +80,8 @@ questions = q_search(interview)
 interview_df = pd.DataFrame(list(zip(questions, answers)), columns = ['questions', 'answers'])
 #Third column is the score, defaults to 7.
 interview_df['score'] = 7
+#fourth column is the feedback
+interview_df['feedback'] = 'Question Feedback:'
 
 #SEARCH FOR (*) DENOTING OVERTIME:
 ##https://stackoverflow.com/questions/36519939/using-index-with-a-list-that-has-repeated-elements  
@@ -95,8 +94,7 @@ def overtime_q(list):
             q_index = i - 2
             overtime_q = interview[q_index]    
             overtime_qs.append(overtime_q)
-            
-            
+        
     return overtime_qs
 
 #Cleaning up overtime questoin list by removing asterisk and blank lines of list.
@@ -116,6 +114,11 @@ for i in range(0, len(all_overtime)):
 #https://stackoverflow.com/questions/37976823/how-to-conditionally-update-dataframe-column-in-pandas-based-on-list
 #1. SCORE - if user went over time for that questions -2 from score
 interview_df.loc[interview_df.questions.isin(clean_overtime_q), 'score'] = interview_df['score'] - 2
+# add the feedback to the dataframe
+# adds feedback for responses that lost points
+interview_df.loc[interview_df.questions.isin(clean_overtime_q), 'feedback'] = interview_df['feedback'] + ' You took too long to answer.'
+# adds feedback for responses that did not lose points
+interview_df.loc[~interview_df.questions.isin(clean_overtime_q), 'feedback'] = interview_df['feedback'] + ' You answered in a good amount of time. Nice!'
 
 #Creating a list of all the answers where user responded in less than 3 sentences.
 short_answers = []
@@ -126,6 +129,11 @@ for i in range(0, len(answers)):
 
 #2. SCORE - if user's answer is too short -2 from score again.
 interview_df.loc[interview_df.answers.isin(short_answers), 'score'] = interview_df['score'] - 2
+# add the feedback to the dataframe
+# adds feedback for responses that lost points
+interview_df.loc[interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] + ' Your answer is too short. You should add more.'
+# adds feedback for responses that did not lose points
+interview_df.loc[~interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] + ' Great answer length!'
 
 # uses spacy to identify entities, saves entitie text and label to a dictionary
 def get_ents(responses):
@@ -148,7 +156,7 @@ def get_ents(responses):
 def eval_ents(responses):
     accpetable_entity_dict = {}  # Create a new empty dictionary
     acceptable_entity_list = []  # Create a new empty list
-    
+    no_entity = []
 
     # run the get_ents method to create a list of all entities
     all_entity = get_ents(responses)
@@ -159,31 +167,31 @@ def eval_ents(responses):
             accpetable_entity_dict[key] = value
             acceptable_entity_list.append(key)
 
-    no_entity = [item for item in answers if item not in acceptable_entity_list]
-    return no_entity
-'''
-# loop through the responses to isolate responses with no entities
-for i in range(0, len(answers)):
-    for j in range(0, len(acceptable_entity_list)):
-        
-        # search for the entity within the sentence
-        if re.search(acceptable_entity_list[j], answers[i]):
-            # if an entity was found, but was added to the no_entity list earlier, try to remove it from the list
-            try:
-                no_entity.remove(answers[i])
-            except ValueError:
-                pass  
-            # if a entity is found in a sentence, no need to search for more entities in that sentence, break to next sentence
-            break
-        # check if a sentence is already in the cumulative list, dont do anything if true (otherwise duplicates sentences)
-        elif answers[i] in no_entity:
-            pass
-        # add the sentence to the cumulative list
-        else:
-            no_entity.append(answers[i])
+    #no_entity = [item for item in answers if item not in acceptable_entity_list]
+    #return no_entity
 
+    # loop through the responses to isolate responses with no entities
+    for i in range(0, len(answers)):
+        for j in range(0, len(acceptable_entity_list)):
+            
+            # search for the entity within the sentence
+            if re.search(acceptable_entity_list[j], answers[i]):
+                # if an entity was found, but was added to the no_entity list earlier, try to remove it from the list
+                try:
+                    no_entity.remove(answers[i])
+                except ValueError:
+                    pass  
+                # if a entity is found in a sentence, no need to search for more entities in that sentence, break to next sentence
+                break
+            # check if a sentence is already in the cumulative list, dont do anything if true (otherwise duplicates sentences)
+            elif answers[i] in no_entity:
+                pass
+            # add the sentence to the cumulative list
+            else:
+                no_entity.append(answers[i])
     return no_entity
-'''
+
+
 #Function iterates through all answers to see if user used at least 1 named entity, if they did it adds to the entity list
 #Need a list of entities the answer had to check if the length was at least 1.
 #But want a dictionary of answer and respective list of entities
@@ -193,4 +201,11 @@ for i in range(0, len(answers)):
 no_ents = eval_ents(answers)
 
 #3. If user's answers used less than 1 named entity
-interview_df.loc[interview_df.answers.isin(no_ents), 'score'] = interview_df['score'] - 2
+interview_df.loc[interview_df.answers.isin(no_ents), 'score'] = interview_df['score'] - 3
+# add the feedback to the dataframe
+# adds feedback for responses that lost points
+interview_df.loc[interview_df.answers.isin(no_ents), 'feedback'] = interview_df['feedback'] + ' You did not include identifying information, such as company names. Including these details can give the interviewer a better understanding of your experience.'
+# adds feedback for responses that did not lose points
+interview_df.loc[~interview_df.answers.isin(no_ents), 'feedback'] = interview_df['feedback'] + ' You included identifying information for the organizations you worked for. Great work!'
+
+
