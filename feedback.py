@@ -29,6 +29,22 @@ for filename in os.listdir(abspath):
 #Opens log file as a list
 with open('user_response.log') as file:
     interview = file.read().splitlines()
+
+
+#Whole interview session is everything before user requests to end the session
+def whole_interview(list):
+    for i in range(len(list)):
+        if re.search('end session', list[i]):
+            end_index = i
+            beg_index = 0
+            whole = list[beg_index:end_index]
+        elif re.search('END SESSION', list[i]):
+            end_index = i
+            beg_index = 0
+            whole = list[beg_index:end_index]
+    return whole        
+    
+ 
     
 #Searches Interview list to find all the questions IRIS asked during interview.
 def q_search(list):
@@ -42,24 +58,29 @@ def q_search(list):
         questions.append(q_only)
     return questions
 
+def a_search(interview):
 #seperate out all of IRIS's statements - Might get rid of category altogether.
-all_iris = [i for i in interview  if re.search(r'IRIS:', i) ]
-#Use list comprehension to isolate the user's answers
-#https://stackoverflow.com/questions/41125909/python-find-elements-in-one-list-that-are-not-in-the-other
-answers_list = [item for item in interview if item not in all_iris]
-#Gets rid of empty rows
-answers_list = list(filter(None,answers_list))
-#Removes * character - Final list of answers:
-answers = [ x for x in answers_list if "*" not in x ]
-answers = [ x for x in answers if "end session" not in x ]
+    all_iris = [i for i in interview  if re.search(r'IRIS:', i) ]
+    #Use list comprehension to isolate the user's answers
+    #https://stackoverflow.com/questions/41125909/python-find-elements-in-one-list-that-are-not-in-the-other
+    answers_list = [item for item in interview if item not in all_iris]
+    #Gets rid of empty rows
+    answers_list = list(filter(None,answers_list))
+    #Removes * character - Final list of answers:
+    answers = [ x for x in answers_list if "*" not in x ]
+    
+    return answers
+
+#Only getting the interview before the session ends
+interview_2 = whole_interview(interview)
+#Retrieving all user's answers
+answers = a_search(interview_2)
 #Final list of questions asked.
 questions = q_search(interview)
 
 #Create a dataframe of Interview session with just the questions and answers
+#Will remove any questions where the user had an empty response.
 interview_df = pd.DataFrame(list(zip(questions, answers)), columns = ['questions', 'answers'])
-#if user says end session delete row.
-interview_df = interview_df[interview_df.answers != 'end session']
-interview_df = interview_df[interview_df.answers != 'NumExpr defaulting to 4 threads.']
 #Third column is the score, defaults to 7.
 interview_df['score'] = 7
 
@@ -75,13 +96,13 @@ def overtime_q(list):
             overtime_q = interview[q_index]    
             overtime_qs.append(overtime_q)
             
+            
     return overtime_qs
 
 #Cleaning up overtime questoin list by removing asterisk and blank lines of list.
 #https://stackoverflow.com/questions/3416401/removing-elements-from-a-list-containing-specific-characters
 all_overtime = overtime_q(interview)    
 all_overtime = [ x for x in all_overtime if "*" not in x ]
-all_overtime = [ x for x in all_overtime if "end session" not in x ]
 all_overtime = list(filter(None,all_overtime))
 
 #Remove IRIS: Question: from list - Clean so can search dictionary
