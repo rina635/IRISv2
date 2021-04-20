@@ -5,16 +5,7 @@
 
 Final Assignment: Team 3 - Rafeef Baamer, Ashish Hingle, Rina Lidder, & Andy Nguyen
 
-#general logic
-# load all questions from csv file 
-# take in name, number of questions
-# start timer
-# pick a question from each category 
-# take in answer input 
-# if input > 90 seconds, ask if they want a hint
-# evaluate answer (NER, POS Tagging)
-# add question and answer to log file (whole conversation) 
-# exit and print final feedback
+
 
 Resources used for this lab come from the materials provided in the AIT 590 course materials.
 - Lecture powerpoints (AIT 590)
@@ -44,11 +35,6 @@ bot_name = 'IRIS'
 bot_formatted_name = 'IRIS: '
 
 
-# this function randomly generates a number between 1 and maximum from df
-def randomNumbGen(max_numb):
-    r = random.randint(1, max_numb)
-    return r
-
 #Customizes IRIS greeting based on time of day.
 def greeting():
     now = datetime.now()
@@ -64,11 +50,6 @@ def greeting():
     return greeting
 
 
-# prints IRIS's response based on the number of choices and a list of possible choices
-def iris_response(numb_choices, choices):
-    
-    rand_numb = randomNumbGen(numb_choices)
-    print(choices[rand_numb])
 
 # function to start IRIS
 def start_conversation():
@@ -103,6 +84,7 @@ def start_conversation():
     print('----------------------\n')
     return name
 
+
 # calls the instructions for using the program 
 def get_help():
     print('\n' + bot_formatted_name + '''Welcome my job here is to help you practice for your interview by providing unlimited number of questions.
@@ -111,8 +93,6 @@ def get_help():
      Exceeding 2 minutes will result in a 2 point infraction.\n''')
     time.sleep(5)
 
-
-#DO WE NEED THESE THREE FUNCTIONS AT ALL?
 
 # clean the input submitted
 def process_input(user_input):
@@ -125,18 +105,21 @@ def load_questions(file):
     data = pd.read_csv(file)     
     return data
 
+#Chooses a question from beginning to end of dataset - Won't repeat question.
 def choose_question(dataframe):
-    rand_numb = randomNumbGen(dataframe.index.max())   
-    #Need to stop it from picking same numbers during the session.
-    ques = dataframe.at[rand_numb, 'Question']
-    cat = dataframe.at[rand_numb, 'Category']
-    
-    
+       
+    lst = range(0, len(dataframe))
+    rand_numb = random.sample(lst, 1)
+    num = rand_numb[0]
+    ques = dataframe.at[num, 'Question']
+    cat = dataframe.at[num, 'Category']
+
+
     return ques, cat
 
-#Iris response when user is idle for 2 minutes.
+#IRIS will log when the user has exceeded 2 minutes without a response with asterisk.
 def idle_check():
-    time.sleep(5)
+    time.sleep(120)
     if answer != None:
         print('\n')
     elif answer == 'end session':
@@ -154,10 +137,9 @@ def idle_check():
 
 #initialize the response and running variables
 response = ''
-running = True
 answer = None
 question_counter = 0
-
+    
 # save the path to the current working directory
 abspath = os.path.abspath(sys.argv[0])
 dname = os.path.dirname(abspath) + '/questions.csv'
@@ -167,13 +149,14 @@ questions_df = load_questions(dname)
 
 # start the conversation
 userName = start_conversation()
-
+n = int(input('{}How many questions would you like for today? \nPlease select a number between 5 and 10.\n'.format(bot_formatted_name)))
 # Reformat the user's name for the chat.
 formattedName = userName + ": "
 
-# continue running while the program is running
-while running: 
-
+# Interview session will continue until the number of questions has been reached.
+while question_counter < n: 
+    
+    
     question, category = choose_question(questions_df)
     question_counter = question_counter + 1
     
@@ -192,12 +175,10 @@ while running:
     #logging user's response into log file without their name.
     log_response = logging.debug('{}'.format(response))
 
-    # tokenize the words
-    tokens = word_tokenize(response)
 
     # Response to whitespace only
     if re.match(r'^\s*$',response): 
-        print('You seem to be quiet. What is on your mind?')
+        print('Okay, I will move on to the next question.')
 
     # match if help is requested
     elif re.match(r'HELP', response, re.IGNORECASE):
@@ -209,3 +190,4 @@ while running:
         running = False   # changes the running global variable to false to end the program
         print(bot_formatted_name + "Thanks for an amazing conversation!")
 
+print(bot_formatted_name + "It was really great learning more about you, the maximum number of questions has been reached.")
