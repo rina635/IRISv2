@@ -44,11 +44,6 @@ bot_name = 'IRIS'
 bot_formatted_name = 'IRIS: '
 
 
-# this function randomly generates a number between 1 and maximum from df
-def randomNumbGen(max_numb):
-    r = random.randint(1, max_numb)
-    return r
-
 #Customizes IRIS greeting based on time of day.
 def greeting():
     now = datetime.now()
@@ -64,11 +59,6 @@ def greeting():
     return greeting
 
 
-# prints IRIS's response based on the number of choices and a list of possible choices
-def iris_response(numb_choices, choices):
-    
-    rand_numb = randomNumbGen(numb_choices)
-    print(choices[rand_numb])
 
 # function to start IRIS
 def start_conversation():
@@ -112,8 +102,6 @@ def get_help():
     time.sleep(5)
 
 
-#DO WE NEED THESE THREE FUNCTIONS AT ALL?
-
 # clean the input submitted
 def process_input(user_input):
     
@@ -125,11 +113,13 @@ def load_questions(file):
     data = pd.read_csv(file)     
     return data
 
+#Chooses a question from beginning to end of dataset - Won't repeat question.
 def choose_question(dataframe):
-    rand_numb = randomNumbGen(dataframe.index.max())   
-    #Need to stop it from picking same numbers during the session.
-    ques = dataframe.at[rand_numb, 'Question']
-    cat = dataframe.at[rand_numb, 'Category']
+    lst = range(0, len(dataframe))
+    rand_numb = random.sample(lst, 1)
+    num = rand_numb[0]
+    ques = dataframe.at[num, 'Question']
+    cat = dataframe.at[num, 'Category']
     
     
     return ques, cat
@@ -192,12 +182,10 @@ while running:
     #logging user's response into log file without their name.
     log_response = logging.debug('{}'.format(response))
 
-    # tokenize the words
-    tokens = word_tokenize(response)
 
     # Response to whitespace only
     if re.match(r'^\s*$',response): 
-        print('You seem to be quiet. What is on your mind?')
+        print('Okay, I will move on to the next question.')
 
     # match if help is requested
     elif re.match(r'HELP', response, re.IGNORECASE):
