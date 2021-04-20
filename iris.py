@@ -93,6 +93,7 @@ def start_conversation():
     print('----------------------\n')
     return name
 
+
 # calls the instructions for using the program 
 def get_help():
     print('\n' + bot_formatted_name + '''Welcome my job here is to help you practice for your interview by providing unlimited number of questions.
@@ -115,13 +116,14 @@ def load_questions(file):
 
 #Chooses a question from beginning to end of dataset - Won't repeat question.
 def choose_question(dataframe):
+       
     lst = range(0, len(dataframe))
     rand_numb = random.sample(lst, 1)
     num = rand_numb[0]
     ques = dataframe.at[num, 'Question']
     cat = dataframe.at[num, 'Category']
-    
-    
+
+
     return ques, cat
 
 #Iris response when user is idle for 2 minutes.
@@ -147,7 +149,7 @@ response = ''
 running = True
 answer = None
 question_counter = 0
-
+    
 # save the path to the current working directory
 abspath = os.path.abspath(sys.argv[0])
 dname = os.path.dirname(abspath) + '/questions.csv'
@@ -157,13 +159,14 @@ questions_df = load_questions(dname)
 
 # start the conversation
 userName = start_conversation()
-
+n = int(input('{}How many questions would you like for today? \nPlease select a number between 5 and 10.\n'.format(bot_formatted_name)))
 # Reformat the user's name for the chat.
 formattedName = userName + ": "
 
 # continue running while the program is running
-while running: 
-
+while question_counter < n: 
+    
+    
     question, category = choose_question(questions_df)
     question_counter = question_counter + 1
     
@@ -197,3 +200,4 @@ while running:
         running = False   # changes the running global variable to false to end the program
         print(bot_formatted_name + "Thanks for an amazing conversation!")
 
+print(bot_formatted_name + "It was really great learning more about you, the maximum number of questions has been reached.")
