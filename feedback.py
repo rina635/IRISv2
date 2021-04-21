@@ -14,6 +14,7 @@ import csv
 #from gensim.summarization import keywords
 from nltk import sent_tokenize
 import numpy as np
+from datetime import datetime
 nlp = spacy.load('en_core_web_sm')
 
 #Finds location of log file
@@ -31,7 +32,7 @@ with open('user_response.log') as file:
     interview = file.read().splitlines()
 
 #Whole interview session is everything before user requests to end the session
-def whole_interview(list):
+def whole_interview(list):    
     for i in range(len(list)):
         if re.search('end session', list[i]):
             end_index = i
@@ -41,6 +42,8 @@ def whole_interview(list):
             end_index = i
             beg_index = 0
             whole = list[beg_index:end_index]
+        else:
+            whole = list
     return whole        
     
 #Searches Interview list to find all the questions IRIS asked during interview.
@@ -118,7 +121,7 @@ interview_df.loc[interview_df.questions.isin(clean_overtime_q), 'score'] = inter
 # adds feedback for responses that lost points
 interview_df.loc[interview_df.questions.isin(clean_overtime_q), 'feedback'] = interview_df['feedback'] + ' You took too long to answer.'
 # adds feedback for responses that did not lose points
-interview_df.loc[~interview_df.questions.isin(clean_overtime_q), 'feedback'] = interview_df['feedback'] + ' You answered in a good amount of time. Nice!'
+interview_df.loc[~interview_df.questions.isin(clean_overtime_q), 'feedback'] = interview_df['feedback'] + ' You answered within 2 minutes.'
 
 #Creating a list of all the answers where user responded in less than 3 sentences.
 short_answers = []
@@ -131,9 +134,9 @@ for i in range(0, len(answers)):
 interview_df.loc[interview_df.answers.isin(short_answers), 'score'] = interview_df['score'] - 2
 # add the feedback to the dataframe
 # adds feedback for responses that lost points
-interview_df.loc[interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] + ' Your answer is too short. You should add more.'
+interview_df.loc[interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] + ' Your answer is too short. You should take as much time as you need to express your answer with some detail.'
 # adds feedback for responses that did not lose points
-interview_df.loc[~interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] + ' Great answer length!'
+interview_df.loc[~interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] + ' Your answer was atleast sufficient in length.'
 
 # uses spacy to identify entities, saves entitie text and label to a dictionary
 def get_ents(responses):
@@ -191,7 +194,6 @@ def eval_ents(responses):
                 no_entity.append(answers[i])
     return no_entity
 
-
 #Function iterates through all answers to see if user used at least 1 named entity, if they did it adds to the entity list
 #Need a list of entities the answer had to check if the length was at least 1.
 #But want a dictionary of answer and respective list of entities
@@ -208,4 +210,30 @@ interview_df.loc[interview_df.answers.isin(no_ents), 'feedback'] = interview_df[
 # adds feedback for responses that did not lose points
 interview_df.loc[~interview_df.answers.isin(no_ents), 'feedback'] = interview_df['feedback'] + ' You included identifying information for the organizations you worked for. Great work!'
 
+# Compile the feedback to be printed and saved to log
+# declare a feedback holder
+compl_feedback = 'FEEDBACK'
 
+# get current date and time for the log file
+now = datetime.now()
+current_time = now.strftime("%H:%M:%S")
+current_date = now.strftime("%B %d, %Y")
+
+# add the date and time to the feedback holder
+compl_feedback += '\nLog file created on: ' + current_date + ' at ' + current_time
+
+# loop through the dataframe and add to the feedback holder
+for ind in interview_df.index: 
+    compl_feedback += '\n\nQuestion ' + str(ind + 1) + ': ' + interview_df['questions'][ind]
+    compl_feedback += '\nAnswer ' + str(ind + 1) + ': ' + interview_df['answers'][ind]
+    compl_feedback += "\nScore: " + str(interview_df['score'][ind]) + '/7'
+    compl_feedback += "\nDetailed Feedback: " + interview_df['feedback'][ind]
+
+# print the feedback to console
+print(compl_feedback)
+
+# save the feedback to a log file
+f = open("feedback.txt", "w")
+f.write(compl_feedback)
+f.close()
+print('\nA feedback file has been created for you to reference.')
