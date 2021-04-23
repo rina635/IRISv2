@@ -17,13 +17,18 @@ nlp = spacy.load('en_core_web_sm')
 #Finds location of log file
 #https://stackoverflow.com/questions/33832184/open-a-log-extension-file-in-python
 #https://stackoverflow.com/questions/37912556/converting-a-log-file-into-a-csv-file-using-python
-abspath = os.path.abspath(sys.argv[0])
-#abspath = r'C:\Users\Ash\Python Files\Interview_Simulator'
-for filename in os.listdir(abspath):
-    if filename == 'user_response.log':
-       f  = open(os.path.join(abspath, 'user_response.log'), "r")
+#https://stackoverflow.com/questions/28836781/reading-column-names-alone-in-a-csv-file
 
-      #Opens log file as a list
+#Load sample answers for feedback.
+abspath = os.path.abspath(sys.argv[0])
+#Open dataset as a dataframe.  
+with open('questions_answers.csv', encoding='utf8', errors='ignore') as f:  
+    reader = csv.reader(f)
+    i = next(reader)
+    rest = list(reader)
+    all_questions_df = pd.DataFrame(rest, columns = ['index', 'question', 'category', 'sample'])
+
+#Load log from IRIS.py as a list.
 with open('user_response.log') as file:
     interview = file.read().splitlines()
 
@@ -33,14 +38,13 @@ def whole_interview(list):
         if re.search('end session', list[i]):
             end_index = i
             beg_index = 0
-            whole = list[beg_index:end_index]
+            list = list[beg_index:end_index]
         elif re.search('END SESSION', list[i]):
             end_index = i
             beg_index = 0
-            whole = list[beg_index:end_index]
-        else:
-            whole = list
-    return whole        
+            list = list[beg_index:end_index]
+
+    return list        
     
 #Searches Interview list to find all the questions IRIS asked during interview.
 def q_search(list):
@@ -68,37 +72,25 @@ def a_search(interview):
     
     return answers
 
-# loads the questions from the CSV
-def load_questions(file):
-    data = pd.read_csv(file)     
-    return data
-
-# save the path to the current working directory
-abspath = os.path.abspath(sys.argv[0])
-dname = os.path.dirname(abspath) + '/questions.csv'
-
-# load questions from the CSV file and save them to a data frame
-questions_df = load_questions(dname)
 
 #Only getting the interview before the session ends
 interview_2 = whole_interview(interview)
 #Retrieving all user's answers
 answers = a_search(interview_2)
 #Final list of questions asked.
-questions = q_search(interview)
+questions = q_search(interview_2)
 
 #Create a dataframe of Interview session with just the questions and answers
 #Df removes any questions where the user had an empty response.
-interview_df = pd.DataFrame(list(zip(questions, answers)), columns = ['questions', 'answers'])
+interview_df = pd.DataFrame(list(zip(questions, answers)), columns = ['question', 'answers'])
 #Third column is the score, defaults to 7.
 interview_df['score'] = 7
 #fourth column is the feedback
-interview_df['feedback'] = 'Question Feedback:'
+interview_df['feedback'] = ''
 
-# merge question and sample answer into the main dataframe
-interview_df = pd.merge(interview_df, questions_df[['Question','Sample']], left_on='questions', right_on='Question', how ='inner')
-#drop the extra question column (needed for the merge)
-interview_df = interview_df.drop('Question', 1)
+#merge question and add sample answer into the main dataframe
+interview_df = pd.merge(interview_df, all_questions_df[['question','sample']], left_on='question', 
+                        right_on='question', how ='inner')
 
 #SEARCH FOR (*) DENOTING OVERTIME:
 ##https://stackoverflow.com/questions/36519939/using-index-with-a-list-that-has-repeated-elements  
@@ -117,25 +109,32 @@ def overtime_q(list):
 
 #Cleaning up overtime question list by removing asterisk and blank lines of list.
 #https://stackoverflow.com/questions/3416401/removing-elements-from-a-list-containing-specific-characters
-all_overtime = overtime_q(interview)    
+
+all_overtime = overtime_q(interview_2)    
 all_overtime = [ x for x in all_overtime if "*" not in x ]
 all_overtime = list(filter(None,all_overtime))
 
 #Remove IRIS: Question: so only getting the question text.
 clean_overtime_q =[]
-for i in range(0, len(all_overtime)):
-    q = all_overtime[i]
-    clean_q = q.split(': ')
-    q_only = clean_q[2]
-    clean_overtime_q.append(q_only)
+IRIS_q_string = 'IRIS: Question:'
+if IRIS_q_string in all_overtime:
+    for i in range(0, len(all_overtime)):
+        q = all_overtime[i]
+        clean_q = q.split(': ')
+        q_only = clean_q[2]
+        clean_overtime_q.append(q_only)
+else:
+    clean_overtime_q.append('')        
 
 #https://stackoverflow.com/questions/37976823/how-to-conditionally-update-dataframe-column-in-pandas-based-on-list
 #1. SCORE - if user went over time for that questions -2 from score column
-interview_df.loc[interview_df.questions.isin(clean_overtime_q), 'score'] = interview_df['score'] - 2
+interview_df.loc[interview_df.question.isin(clean_overtime_q), 'score'] = interview_df['score'] - 2
 #if user went over time then will add this feedback:
-interview_df.loc[interview_df.questions.isin(clean_overtime_q), 'feedback'] = interview_df['feedback'] + ''' You took too long to answer.'''
+interview_df.loc[interview_df.question.isin(clean_overtime_q), 'feedback'] = interview_df['feedback'] + '''
+You took too long to answer.'''
 #adds feedback for responses that did not lose points
-interview_df.loc[~interview_df.questions.isin(clean_overtime_q), 'feedback'] = interview_df['feedback'] + ''' You answered within 2 minutes.'''
+interview_df.loc[~interview_df.question.isin(clean_overtime_q), 'feedback'] = interview_df['feedback'] + '''
+You answered within 2 minutes.'''
 
 #Creating a list of all the answers where user responded in less than 3 sentences.
 short_answers = []
@@ -148,9 +147,11 @@ for i in range(0, len(answers)):
 #2.SCORE - if user's answer is too short -2 from score column.
 interview_df.loc[interview_df.answers.isin(short_answers), 'score'] = interview_df['score'] - 2
 #adds feedback for responses that lost points
-interview_df.loc[interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] + ''' Your answer is too short. You should use the time to express your answer with more detail.'''
+interview_df.loc[interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] + '''
+Your answer is too short. You should use the time to express your answer with more detail.'''
 #adds feedback for responses that did not lose points
-interview_df.loc[~interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] + ''' Your answer was sufficient in length.'''
+interview_df.loc[~interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] + '''
+Your answer was sufficient in length.'''
 
 #uses spacy to identify entities, saves entity text and label to a dictionary
 def get_ents(responses):
@@ -222,36 +223,38 @@ no_ents = eval_ents(answers)
 interview_df.loc[interview_df.answers.isin(no_ents), 'score'] = interview_df['score'] - 3
 #add the feedback to the dataframe
 #adds feedback for responses that lost points
-interview_df.loc[interview_df.answers.isin(no_ents), 'feedback'] = interview_df['feedback'] + ''' You did not include identifying information, such as company names. Including these details can give the 
+interview_df.loc[interview_df.answers.isin(no_ents), 'feedback'] = interview_df['feedback'] + '''
+You did not include identifying information, such as company names. Including these details can give the 
 interviewer a better understanding of your experience.'''
 #adds feedback for responses that did not lose points
-interview_df.loc[~interview_df.answers.isin(no_ents), 'feedback'] = interview_df['feedback'] + ''' You included identifying information for the organizations you worked for. Great work!'''
+interview_df.loc[~interview_df.answers.isin(no_ents), 'feedback'] = interview_df['feedback'] + '''
+You included identifying information for the organizations you worked for. Great work!'''
 
 # Compile the feedback to be printed and saved to log
 # declare a feedback holder
-compl_feedback = 'FEEDBACK'
+compl_feedback = 'IRIS FEEDBACK'
 
 #get current date and time for the log file
 now = datetime.now()
-current_time = now.strftime("%H:%M:%S")
-current_date = now.strftime("%B %d, %Y")
+current_time = now.strftime('%H:%M')
+current_date = now.strftime('%B %d, %Y')
 
 #add the date and time to the feedback holder
-compl_feedback += '\nLog file created on: ' + current_date + ' at ' + current_time
+compl_feedback += '\nGenerated on: ' + current_date + ' at ' + current_time
 
 #loop through the dataframe and add to the feedback holder
 for ind in interview_df.index: 
-    compl_feedback += '\n\nQuestion ' + str(ind + 1) + ': ' + interview_df['questions'][ind]
+    compl_feedback += '\n\nQuestion ' + str(ind + 1) + ': ' + interview_df['question'][ind]
     compl_feedback += '\nAnswer ' + str(ind + 1) + ': ' + interview_df['answers'][ind]
     compl_feedback += '\nScore: ' + str(interview_df['score'][ind]) + '/7'
     compl_feedback += '\nDetailed Feedback: ' + interview_df['feedback'][ind]
     compl_feedback += '\nSample answer: "'
-    compl_feedback += interview_df['Sample'][ind] + '"'
+    compl_feedback += interview_df['sample'][ind] + '"'
 #print the feedback to console
 print(compl_feedback)
 
 #save the feedback to a text file.
-f = open("feedback.txt", "w")
+f = open('feedback.txt', 'w', encoding='utf-8')
 f.write(compl_feedback)
 f.close()
-print('\nA feedback file has been created for you to reference.')
+print('\nThe graded feedback file has been created for your reference.')
