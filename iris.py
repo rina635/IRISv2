@@ -39,12 +39,12 @@ def greeting():
     now = datetime.now()
     time_holder = now.strftime('%H:%M')
                
-    if time_holder > "12:00" and time_holder < "16:00":
-        greeting = "Good afternoon"
-    elif time_holder > "16:01" and time_holder < "23:59":
-        greeting = "Good evening"
+    if time_holder > '12:00' and time_holder < '16:00':
+        greeting = 'Good afternoon'
+    elif time_holder > '16:01' and time_holder < '23:59':
+        greeting = 'Good evening'
     else:
-        greeting = "Good morning"
+        greeting = 'Good morning'
     
     return greeting
 
@@ -134,6 +134,7 @@ def idle_check():
 response = ''
 answer = None
 question_counter = 0
+
     
 # save the path to the current working directory
 abspath = os.path.abspath(sys.argv[0])
@@ -148,7 +149,7 @@ n = int(input('''{}How many questions would you like for today? \nPlease select 
               .format(bot_formatted_name)))
 
 # Reformat the user's name for the chat.
-formattedName = userName + ": "
+formattedName = userName + ': '
 
 # Interview session will continue until the number of questions has been reached.
 if n < 5:
@@ -164,13 +165,13 @@ while n >= 5 and n <= 10 and question_counter < n:
     question_counter = question_counter + 1
     
     print('{}The category is: {}'.format(bot_formatted_name, category))
-    print('{}Question {}:{}'.format(bot_formatted_name, question_counter, question))
+    print('{}Question {}: {}'.format(bot_formatted_name, question_counter, question))
     #Start timining how long user takes to respond after question has been printed out.
     Thread(target = idle_check).start()
     
     #logs IRIS Category and question declaration.
     logging.debug('{}The category is: {}'.format(bot_formatted_name, category))
-    logging.debug('{}Question {}:{}\n'.format(bot_formatted_name, question_counter, question))
+    logging.debug('{}Question {}: {}\n'.format(bot_formatted_name, question_counter, question))
 
     #takes user's input
     response = input(formattedName)
@@ -193,4 +194,4 @@ while n >= 5 and n <= 10 and question_counter < n:
 
 
 #Once question limit is reached/user ends session , will output this:
-print(bot_formatted_name + "It was really great learning more about you, this is the end of our session.")
+print(bot_formatted_name + 'It was really great learning more about you, this is the end of our session.')
