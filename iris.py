@@ -110,7 +110,6 @@ def choose_question(dataframe):
     ques = dataframe.at[num, 'Question']
     cat = dataframe.at[num, 'Category']
 
-
     return ques, cat
 
 #IRIS will log when the user has exceeded 2 mins without a response with asterisk.
@@ -157,7 +156,7 @@ if n < 5:
 elif n > 10:
     print('{}Invalid number, please select a number between 5 and 10.'.format(bot_formatted_name))
 
-while n > 5 and n <= 10 and question_counter < n: 
+while n >= 5 and n <= 10 and question_counter < n: 
     
     
     question, category = choose_question(questions_df)

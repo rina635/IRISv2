@@ -68,6 +68,18 @@ def a_search(interview):
     
     return answers
 
+# loads the questions from the CSV
+def load_questions(file):
+    data = pd.read_csv(file)     
+    return data
+
+# save the path to the current working directory
+abspath = os.path.abspath(sys.argv[0])
+dname = os.path.dirname(abspath) + '/questions.csv'
+
+# load questions from the CSV file and save them to a data frame
+questions_df = load_questions(dname)
+
 #Only getting the interview before the session ends
 interview_2 = whole_interview(interview)
 #Retrieving all user's answers
@@ -82,6 +94,11 @@ interview_df = pd.DataFrame(list(zip(questions, answers)), columns = ['questions
 interview_df['score'] = 7
 #fourth column is the feedback
 interview_df['feedback'] = 'Question Feedback:'
+
+# merge question and sample answer into the main dataframe
+interview_df = pd.merge(interview_df, questions_df[['Question','Sample']], left_on='questions', right_on='Question', how ='inner')
+#drop the extra question column (needed for the merge)
+interview_df = interview_df.drop('Question', 1)
 
 #SEARCH FOR (*) DENOTING OVERTIME:
 ##https://stackoverflow.com/questions/36519939/using-index-with-a-list-that-has-repeated-elements  
@@ -116,11 +133,9 @@ for i in range(0, len(all_overtime)):
 #1. SCORE - if user went over time for that questions -2 from score column
 interview_df.loc[interview_df.questions.isin(clean_overtime_q), 'score'] = interview_df['score'] - 2
 #if user went over time then will add this feedback:
-interview_df.loc[interview_df.questions.isin(clean_overtime_q), 'feedback'] = interview_df['feedback'] 
-+ ''' You took too long to answer.'''
+interview_df.loc[interview_df.questions.isin(clean_overtime_q), 'feedback'] = interview_df['feedback'] + ''' You took too long to answer.'''
 #adds feedback for responses that did not lose points
-interview_df.loc[~interview_df.questions.isin(clean_overtime_q), 'feedback'] = interview_df['feedback'] 
-+ ''' You answered within 2 minutes.'''
+interview_df.loc[~interview_df.questions.isin(clean_overtime_q), 'feedback'] = interview_df['feedback'] + ''' You answered within 2 minutes.'''
 
 #Creating a list of all the answers where user responded in less than 3 sentences.
 short_answers = []
@@ -133,11 +148,9 @@ for i in range(0, len(answers)):
 #2.SCORE - if user's answer is too short -2 from score column.
 interview_df.loc[interview_df.answers.isin(short_answers), 'score'] = interview_df['score'] - 2
 #adds feedback for responses that lost points
-interview_df.loc[interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] 
-+ ''' Your answer is too short. You should use the time to express your answer with more detail.'''
+interview_df.loc[interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] + ''' Your answer is too short. You should use the time to express your answer with more detail.'''
 #adds feedback for responses that did not lose points
-interview_df.loc[~interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] 
-+ ''' Your answer was sufficient in length.'''
+interview_df.loc[~interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] + ''' Your answer was sufficient in length.'''
 
 #uses spacy to identify entities, saves entity text and label to a dictionary
 def get_ents(responses):
@@ -209,12 +222,10 @@ no_ents = eval_ents(answers)
 interview_df.loc[interview_df.answers.isin(no_ents), 'score'] = interview_df['score'] - 3
 #add the feedback to the dataframe
 #adds feedback for responses that lost points
-interview_df.loc[interview_df.answers.isin(no_ents), 'feedback'] = interview_df['feedback'] 
-+ ''' You did not include identifying information, such as company names. Including these details can give the 
+interview_df.loc[interview_df.answers.isin(no_ents), 'feedback'] = interview_df['feedback'] + ''' You did not include identifying information, such as company names. Including these details can give the 
 interviewer a better understanding of your experience.'''
 #adds feedback for responses that did not lose points
-interview_df.loc[~interview_df.answers.isin(no_ents), 'feedback'] = interview_df['feedback'] 
-+ ''' You included identifying information for the organizations you worked for. Great work!'''
+interview_df.loc[~interview_df.answers.isin(no_ents), 'feedback'] = interview_df['feedback'] + ''' You included identifying information for the organizations you worked for. Great work!'''
 
 # Compile the feedback to be printed and saved to log
 # declare a feedback holder
@@ -232,9 +243,10 @@ compl_feedback += '\nLog file created on: ' + current_date + ' at ' + current_ti
 for ind in interview_df.index: 
     compl_feedback += '\n\nQuestion ' + str(ind + 1) + ': ' + interview_df['questions'][ind]
     compl_feedback += '\nAnswer ' + str(ind + 1) + ': ' + interview_df['answers'][ind]
-    compl_feedback += "\nScore: " + str(interview_df['score'][ind]) + '/7'
-    compl_feedback += "\nDetailed Feedback: " + interview_df['feedback'][ind]
-
+    compl_feedback += '\nScore: ' + str(interview_df['score'][ind]) + '/7'
+    compl_feedback += '\nDetailed Feedback: ' + interview_df['feedback'][ind]
+    compl_feedback += '\nSample answer: "'
+    compl_feedback += interview_df['Sample'][ind] + '"'
 #print the feedback to console
 print(compl_feedback)
 
