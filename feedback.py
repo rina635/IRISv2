@@ -43,7 +43,6 @@ def whole_interview(list):
             end_index = i
             beg_index = 0
             list = list[beg_index:end_index]
-
     return list        
     
 #Searches Interview list to find all the questions IRIS asked during interview.
@@ -68,10 +67,8 @@ def a_search(interview):
     #Gets rid of empty rows
     answers_list = list(filter(None,answers_list))
     #Removes * character IRIS denoted if they went overtime.
-    answers = [ x for x in answers_list if "*" not in x ]
-    
+    answers = [ x for x in answers_list if "*" not in x ] 
     return answers
-
 
 #Only getting the interview before the session ends
 interview_2 = whole_interview(interview)
@@ -104,7 +101,6 @@ def overtime_q(list):
             q_index = i - 2
             overtime_q = interview[q_index]    
             overtime_qs.append(overtime_q)
-        
     return overtime_qs
 
 #Cleaning up overtime question list by removing asterisk and blank lines of list.
@@ -166,8 +162,7 @@ def get_ents(responses):
             
             # check to avoid duplicated keys
             if x not in entity.keys():
-                entity[x] = y
-            
+                entity[x] = y    
     return entity
 
 #evaluates the sentences to see if an Entity is present. If a sentence does not have an entity, save it to no_entity list.
@@ -186,9 +181,6 @@ def eval_ents(responses):
         if value == 'ORG' or value == 'PERSON':
             accpetable_entity_dict[key] = value
             acceptable_entity_list.append(key)
-
-    #no_entity = [item for item in answers if item not in acceptable_entity_list]
-    #return no_entity
 
     #loop through the responses to isolate responses with no entities
     for i in range(0, len(answers)):
@@ -209,6 +201,10 @@ def eval_ents(responses):
             #add the sentence to the cumulative list
             else:
                 no_entity.append(answers[i])
+                
+        #condition to add items to the no_entity list if there are 0 entities in any of the answers
+        if not acceptable_entity_list:
+            no_entity.append(answers[i])
     return no_entity
 
 #Function iterates through all answers to see if user used at least 1 named entity, if they did it adds to the entity list
