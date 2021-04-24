@@ -1,51 +1,53 @@
 IRIS FEEDBACK
-Generated on: April 23, 2021 at 17:27
+Generated on: April 24, 2021 at 18:06
 
-Question 1:  Have you ever violated company policy to solve a problem or do your job?
-Answer 1: I did not work there long at Amazon.
-Score: 5/7
+Question 1:  What do you do if you want more training than what your job is providing you?
+Answer 1: Amazon was the name of the organization. hello. yes
+Score: 10/10
 Detailed Feedback: 
-You answered within 2 minutes.
-Your answer is too short. You should use the time to express your answer with more detail.
-You included identifying information for the organizations you worked for. Great work!
-Sample answer: "I have not violated policy in any of my jobs at Apple, Microsoft, or Tesla. I believe company policies are created to protect everyone. It's important to make sure as employees we keep working towards maintaining those policies too."
+-You answered within 2 minutes.
+-Your answer was sufficient in length.
+-You included identifying information for the organizations you worked for.
+-The sentiment of your response matches the question asked.
+Sample answer: "I would communicate this to my supervisors. I think it could partly be because they perhaps do not realize that I need more training to feel comfortable. At my previous job with Universal Music Inc., we had open training days to allow for these sort of recommendations to make their way up."
 
-Question 2:  Have you ever noticed a manager or boss violating company policy? If so, how did you handle it?
-Answer 2: There are many reasons for that.
-Score: 2/7
+Question 2:  Tell me about a time you’ve wished you handled a situation differently.
+Answer 2: I hate everything in the world. Death and Destruction.
+Score: 2/10
 Detailed Feedback: 
-You answered within 2 minutes.
-Your answer is too short. You should use the time to express your answer with more detail.
-You did not include identifying information, such as company names. Including these details can give the 
+-You answered within 2 minutes.
+-Your answer is too short. You should use the time to express your answer with more detail.
+-You did not include identifying information, such as company names. Including these details can give the 
 interviewer a better understanding of your experience.
-Sample answer: "I have not had this happen before. I think it is important for all members of a team to be held to the same standard. In my previous job at Lenovo, we were encouraged to bring this issues to HR, because safety of the team is a collaborative effort."
+-The sentiment of your response does not match the answer. Try to be more positive.
+Sample answer: "TBA"
 
-Question 3:  What would you do if you were chosen to represent the company at a trade show?
-Answer 3: Here is the way
-Score: 2/7
+Question 3:  Have you ever encountered a coworker or boss violating the law, and if so, what did you do?
+Answer 3: Microsoft
+Score: 8/10
 Detailed Feedback: 
-You answered within 2 minutes.
-Your answer is too short. You should use the time to express your answer with more detail.
-You did not include identifying information, such as company names. Including these details can give the 
-interviewer a better understanding of your experience.
-Sample answer: "I would love to participate! I was able to travel and present CuteMonkey at SXSW in 2018. It was a great experience and I loved interacting with our customers and clients."
+-You answered within 2 minutes.
+-Your answer is too short. You should use the time to express your answer with more detail.
+-You included identifying information for the organizations you worked for.
+-The sentiment of your response matches the question asked.
+Sample answer: "I think it is important for all members of a team to be held to the same standard. I have not had this happen to me in the past. As a team member working at Costco, we were encouraged to bring this issues to HR, because safety of the team is a collaborative effort."
 
-Question 4:  What would you discuss if you could talk to our upper management today?
-Answer 4: Yes, I would
-Score: 2/7
+Question 4:  Tell me about a time you were stressed at work and how you handled it.
+Answer 4: Being realistic is very important. Dreaming big has its place, but you have to be able to justify that thought with an actionable plan. While I worked at Ross, I would always encourage our store employees to contribute to their retirement plans, because those big dreams are much easier to achieve when you make small consistent steps towards the goal.
+Score: 10/10
 Detailed Feedback: 
-You answered within 2 minutes.
-Your answer is too short. You should use the time to express your answer with more detail.
-You did not include identifying information, such as company names. Including these details can give the 
-interviewer a better understanding of your experience.
-Sample answer: "I would talk about the ways that we feel supported in the organization. From my experience as a Door Installer, I would also bring up any issues or pain points we are facing. Its important to be respectful and gauge the conversation though. Complaining never helps anyone."
+-You answered within 2 minutes.
+-Your answer was sufficient in length.
+-You included identifying information for the organizations you worked for.
+-The sentiment of your response matches the question asked.
+Sample answer: "TBA"
 
-Question 5:  What is the biggest mistake you’ve made as part of your job? How did you correct it?
-Answer 5: Yes, that was a mistake at work
-Score: 2/7
+Question 5:  Have you ever had a time where you’ve proposed a solution to a problem only to have it rejected? What did you do?
+Answer 5: While at Instantly, I was promoted 3 times and breached the position of Regional Secretary to the Vice Chancellor. My initial goal was to learn as much as I could in the organization, since I joined straight out of school. But eventually I fell in love with the industry, and the people I met at Instantly were some of the brightest I know.
+Score: 10/10
 Detailed Feedback: 
-You answered within 2 minutes.
-Your answer is too short. You should use the time to express your answer with more detail.
-You did not include identifying information, such as company names. Including these details can give the 
-interviewer a better understanding of your experience.
-Sample answer: "As an Intern at Microsoft, I was in charge of a new project that included building a new platform for designers. I made a mistake in initially noting the frameworks that we would need, and had it not been corrected would have been problematic. That is why I constantly check my criteria to make sure nothing falls through."
+-You answered within 2 minutes.
+-Your answer was sufficient in length.
+-You included identifying information for the organizations you worked for.
+-The sentiment of your response matches the question asked.
+Sample answer: "Yes, this did happen to me while I worked at Nokia. I created a roadmap for future the future development of a product we were working on. Unfortunately, a software package brought in did the same, and due to the vendor relationships we decided to go with the software. It was a great learning experience at the end of the day, so I did not mind that it was not ultimately implemented."
