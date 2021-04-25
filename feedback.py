@@ -67,33 +67,13 @@ def a_search(interview):
     answers_list = list(filter(None,not_iris))
     #Removes * character IRIS denoted if they went overtime.
     answers = [ x for x in answers_list if '*' not in x ] 
-    no_help_answers = [ x for x in answers if 'help' not in x ] 
-    no_help2_answers = [ x for x in no_help_answers if 'HELP' not in x ]
-    return no_help2_answers
 
-#Gets the question the user requested help for and didn't answer.
-def retrieve_help(interview):
-    help_search = re.compile('help', re.IGNORECASE)
-    for i in range(len(interview)):
-        if re.search(help_search, interview[i]):
-            #question where user asked for help index:
-                q_help_index = i - 2
-                question_to_remove = (interview[q_help_index])
-
-                
-                return question_to_remove
+    return answers
 
 
 #Only getting the interview before the session ends
 interview_2 = whole_interview(interview)
-#remove the question where user answered HELP
-help_q = retrieve_help(interview_2)
-#if help was not used by the user then replaces variable with '@@@'
-value = None
-help_q = '@@@@'if value is None else value
-#since interview session won't have @@@ it will remain the same.
-if help_q in interview_2: interview_2.remove(help_q)
-#Retrieving all user's answers
+#List of all user's answers.
 answers = a_search(interview_2)
 
 #Final list of questions asked.
@@ -104,6 +84,7 @@ possible_total_score = 4
 #Create a dataframe of Interview session with just the questions and answers
 #Df removes any questions where the user had an empty response.
 interview_df = pd.DataFrame(list(zip(questions, answers)), columns = ['question', 'answers'])
+
 #Third column is the score, defaults to 7.
 interview_df['score'] = possible_total_score
 #fourth column is the feedback
@@ -300,6 +281,8 @@ final_df = pd.merge(interview_df, low_sample_df, on= ['question', 'answers'], ho
 #merge question and add sample answer into the main dataframe
 interview_df = pd.merge(interview_df, all_questions_df[['question','sample']], left_on='question', right_on='question', how ='inner')
 
+#Remove answers where user requested help.
+interview_df = interview_df[(interview_df.answers != 'HELP') & (interview_df.answers != 'help')]
 
 # Compile the feedback to be printed and saved to log
 # declare a feedback holder
