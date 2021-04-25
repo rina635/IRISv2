@@ -167,7 +167,7 @@ while n >= 5 and n <= 10 and question_counter < n:
     print('{}The category is: {}'.format(bot_formatted_name, category))
     print('{}Question {}: {}'.format(bot_formatted_name, question_counter, question))
     #Start timining how long user takes to respond after question has been printed out.
-    Thread(target = idle_check)
+    Thread(target = idle_check).start()
     
     #logs IRIS Category and question declaration.
     logging.debug('{}The category is: {}'.format(bot_formatted_name, category))
