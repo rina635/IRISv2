@@ -34,16 +34,14 @@ with open('user_response.log') as file:
     interview = file.read().splitlines()
 
 #If user exited session then need to execute so that can capture before user requested to end the session.
-def whole_interview(list):    
-    for i in range(len(list)):
-        if re.search('end session', list[i]):
+def whole_interview(interview):    
+    end_sesh = re.compile('end session', re.IGNORECASE)
+    for i in range(len(interview)):
+        if re.search(end_sesh, interview[i]):
             end_index = i
             beg_index = 0
-            list = list[beg_index:end_index]
-        elif re.search('END SESSION', list[i]):
-            end_index = i
-            beg_index = 0
-            list = list[beg_index:end_index]
+            list = interview[beg_index:end_index]
+    
     return list        
     
 #Searches Interview list to find all the questions IRIS asked during interview.
@@ -64,20 +62,40 @@ def a_search(interview):
 #seperate out all of IRIS's statements
     all_iris = [i for i in interview  if re.search(r'IRIS:', i) ]
     #Use list comprehension to isolate the user's answers   
-    answers_list = [item for item in interview if item not in all_iris]
+    not_iris = [item for item in interview if item not in all_iris]
     #Gets rid of empty rows
-    answers_list = list(filter(None,answers_list))
+    answers_list = list(filter(None,not_iris))
     #Removes * character IRIS denoted if they went overtime.
-    answers = [ x for x in answers_list if "*" not in x ] 
+    answers = [ x for x in answers_list if '*' not in x ] 
+
     return answers
 
+#Gets the question the user requested help for and didn't answer.
+def retrieve_help(interview):
+    help_search = re.compile('help', re.IGNORECASE)
+    for i in range(len(interview)):
+        if re.search(help_search, interview[i]):
+            #question where user asked for help index:
+                q_help_index = i - 2
+                question_to_remove = (interview[q_help_index])
+                question_to_remove = question_to_remove.split(': ')
+                question_to_remove = question_to_remove[2]
+                
+                return question_to_remove
+            
+            
 #Only getting the interview before the session ends
 interview_2 = whole_interview(interview)
 #Retrieving all user's answers
-answers = a_search(interview_2)
-#Final list of questions asked.
-questions = q_search(interview_2)
+all_answers = a_search(interview_2)
+#remove any answers where user asked for help
+answers = [ x for x in all_answers if 'HELP' not in x ] 
+answers = [ x for x in all_answers if 'help' not in x ] 
 
+#Final list of questions asked.
+all_questions = q_search(interview_2)
+help_q = retrieve_help(interview_2)
+questions = [ x for x in all_questions if help_q  not in x ] 
 possible_total_score = 4
 
 #Create a dataframe of Interview session with just the questions and answers
@@ -88,14 +106,12 @@ interview_df['score'] = possible_total_score
 #fourth column is the feedback
 interview_df['feedback'] = ''
 
-#merge question and add sample answer into the main dataframe
-interview_df = pd.merge(interview_df, all_questions_df[['question','sample']], left_on='question', right_on='question', how ='inner')
 
 #SEARCH FOR (*) DENOTING OVERTIME:
 ##https://stackoverflow.com/questions/36519939/using-index-with-a-list-that-has-repeated-elements  
 ##https://stackoverflow.com/questions/3675144/regex-error-nothing-to-repeat   
 def overtime_q(list):
-    asterisk = re.compile(r"(\*)")    
+    asterisk = re.compile(r'(\*)')    
     overtime_qs = []
     for i in range(len(interview)):
         if re.search(asterisk, interview[i]):
@@ -279,6 +295,9 @@ def senti_analysis(dataframe):
 
 # run the sentinment analysis function and the results to feedback
 senti_analysis(interview_df)
+
+#merge question and add sample answer into the main dataframe
+interview_df = pd.merge(interview_df, all_questions_df[['question','sample']], left_on='question', right_on='question', how ='inner')
 
 
 # Compile the feedback to be printed and saved to log
