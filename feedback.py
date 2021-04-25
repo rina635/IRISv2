@@ -67,8 +67,9 @@ def a_search(interview):
     answers_list = list(filter(None,not_iris))
     #Removes * character IRIS denoted if they went overtime.
     answers = [ x for x in answers_list if '*' not in x ] 
-
-    return answers
+    no_help_answers = [ x for x in answers if 'help' not in x ] 
+    no_help2_answers = [ x for x in no_help_answers if 'HELP' not in x ]
+    return no_help2_answers
 
 #Gets the question the user requested help for and didn't answer.
 def retrieve_help(interview):
