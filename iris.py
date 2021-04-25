@@ -119,8 +119,10 @@ def idle_check():
         print('\n')
     elif answer == 'end session':
         print('\n')
+        
     elif answer == 'END SESSION':   
         print('\n')
+        
 #Time exceeded character won't print to console but will be logged.
     x = '*'
     logging.debug(x) 
@@ -130,33 +132,31 @@ def idle_check():
 # start of code, end of functions
 #----------------------------------------------
 
-#initialize the response and running variables
+#initialize the response and counter variables
 response = ''
 answer = None
 question_counter = 0
 
     
-# save the path to the current working directory
+#save the path to the current working directory
 abspath = os.path.abspath(sys.argv[0])
 dname = os.path.dirname(abspath) + '/questions.csv'
 
-# load questions from the CSV file and save them to a data frame
+#load questions from the dataset into data frame
 questions_df = load_questions(dname)
 
-# start the conversation
+#start the conversation
 userName = start_conversation()
 n = int(input('''{}How many questions would you like for today? \nPlease select a number between 5 and 10.\n'''
               .format(bot_formatted_name)))
 
-# Reformat the user's name for the chat.
-formattedName = userName + ': '
+#Reformat the user's name for the chat.
+user_formatted_name = userName + ': '
 
-# Interview session will continue until the number of questions has been reached.
-if n < 5:
+#Message if number of questions requested doesn't fall between 5-10.
+if n < 5 or n > 10:
     print('{}Invalid number, please select a number between 5 and 10.'.format(bot_formatted_name))
-elif n > 10:
-    print('{}Invalid number, please select a number between 5 and 10.'.format(bot_formatted_name))
-
+#Interview session will continue until the number of questions has been reached.    
 while n >= 5 and n <= 10 and question_counter < n: 
     
     
@@ -167,31 +167,31 @@ while n >= 5 and n <= 10 and question_counter < n:
     print('{}The category is: {}'.format(bot_formatted_name, category))
     print('{}Question {}: {}'.format(bot_formatted_name, question_counter, question))
     #Start timining how long user takes to respond after question has been printed out.
-    Thread(target = idle_check).start()
+    Thread(target = idle_check)
     
     #logs IRIS Category and question declaration.
     logging.debug('{}The category is: {}'.format(bot_formatted_name, category))
     logging.debug('{}Question {}: {}\n'.format(bot_formatted_name, question_counter, question))
 
     #takes user's input
-    response = input(formattedName)
+    response = input(user_formatted_name)
     #logging user's response into log file without their name.
     log_response = logging.debug('{}'.format(response))
 
 
-    # Response to whitespace only
+    #Response to whitespace only
     if re.match(r'^\s*$',response): 
         print('Okay, I will move on to the next question.')
 
-    # match if help is requested
+    #Runs help function with instructions when user calls for help.
     elif re.match(r'HELP', response, re.IGNORECASE):
         get_help()
 
 
-    # exit the while loop if the user typed end session or END SESSION 
-    elif response == 'end session' or response == 'END SESSION':
+    #Exits the conversation if user requests to end session.
+    elif re.match(r'END SESSION', response, re.IGNORECASE):
         break
 
 
 #Once question limit is reached/user ends session , will output this:
-print(bot_formatted_name + 'It was really great learning more about you, this is the end of our session.')
+print('{}It was really great learning more about you, {} this is the end of our session.'.format(bot_formatted_name, userName))
