@@ -9,7 +9,7 @@ Created on Tue Apr 13 15:45:28 2021
 import os, sys, re, csv, spacy
 from nltk import pos_tag
 import pandas as pd
-from nltk import sent_tokenize
+from nltk import sent_tokenize, word_tokenize  
 import numpy as np
 from datetime import datetime
 nlp = spacy.load('en_core_web_sm')
@@ -86,8 +86,7 @@ interview_df['score'] = 7
 interview_df['feedback'] = ''
 
 #merge question and add sample answer into the main dataframe
-interview_df = pd.merge(interview_df, all_questions_df[['question','sample']], left_on='question', 
-                        right_on='question', how ='inner')
+interview_df = pd.merge(interview_df, all_questions_df[['question','sample']], left_on='question', right_on='question', how ='inner')
 
 #SEARCH FOR (*) DENOTING OVERTIME:
 ##https://stackoverflow.com/questions/36519939/using-index-with-a-list-that-has-repeated-elements  
@@ -133,13 +132,24 @@ interview_df.loc[~interview_df.question.isin(clean_overtime_q), 'feedback'] = in
 You answered within 2 minutes.'''
 
 #Creating a list of all the answers where user responded in less than 3 sentences.
-short_answers = []
+short_sent = []
 for i in range(0, len(answers)):
     #Tokenizes each answer and checks the length of sentence tokens.
     sent_tokens = sent_tokenize(answers[i])
     if len(sent_tokens) < 3:
-        short_answers.append(answers[i])
+        short_sent.append(answers[i])
+#creating a list of all the answers where the user responded using less than 45 words.
+#https://stackoverflow.com/questions/15547409/how-to-get-rid-of-punctuation-using-nltk-tokenizer      
+less_45_words = []
+for i in range(0, len(answers)):
+    words= word_tokenize(answers[i])
+    #Will not count punctuation in final word count
+    words=[word.lower() for word in words if word.isalpha()]
+    if len(words) < 45:
+        less_45_words.append(answers[i])
 
+#Will store user's answers that didn't meet either of the length criteria.
+short_answers = sorted(np.unique(short_sent + less_45_words))     
 #2.SCORE - if user's answer is too short -2 from score column.
 interview_df.loc[interview_df.answers.isin(short_answers), 'score'] = interview_df['score'] - 2
 #adds feedback for responses that lost points
@@ -225,6 +235,14 @@ interviewer a better understanding of your experience.'''
 #adds feedback for responses that did not lose points
 interview_df.loc[~interview_df.answers.isin(no_ents), 'feedback'] = interview_df['feedback'] + '''
 You included identifying information for the organizations you worked for. Great work!'''
+
+
+#filter interview df for all of user's answers that were less than 7
+low_score_df = interview_df[interview_df.score < 7]
+#add sample answers for low score answers
+low_sample_df = pd.merge(low_score_df, all_questions_df[['question','sample']], left_on='question', 
+                        right_on='question', how ='inner')
+
 
 # Compile the feedback to be printed and saved to log
 # declare a feedback holder
