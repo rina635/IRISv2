@@ -12,6 +12,7 @@ import pandas as pd
 from nltk import sent_tokenize, word_tokenize  
 import numpy as np
 from datetime import datetime
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
 nlp = spacy.load('en_core_web_sm')
 
 #Finds location of log file
@@ -77,11 +78,13 @@ answers = a_search(interview_2)
 #Final list of questions asked.
 questions = q_search(interview_2)
 
+possible_total_score = 4
+
 #Create a dataframe of Interview session with just the questions and answers
 #Df removes any questions where the user had an empty response.
 interview_df = pd.DataFrame(list(zip(questions, answers)), columns = ['question', 'answers'])
 #Third column is the score, defaults to 7.
-interview_df['score'] = 7
+interview_df['score'] = possible_total_score
 #fourth column is the feedback
 interview_df['feedback'] = ''
 
@@ -123,13 +126,14 @@ else:
 
 #https://stackoverflow.com/questions/37976823/how-to-conditionally-update-dataframe-column-in-pandas-based-on-list
 #1. SCORE - if user went over time for that questions -2 from score column
-interview_df.loc[interview_df.question.isin(clean_overtime_q), 'score'] = interview_df['score'] - 2
+interview_df.loc[interview_df.question.isin(clean_overtime_q), 'score'] = interview_df['score'] - 1
 #if user went over time then will add this feedback:
 interview_df.loc[interview_df.question.isin(clean_overtime_q), 'feedback'] = interview_df['feedback'] + '''
-You took too long to answer.'''
+-You took too long to answer.
+ You won't have too much time to think of your answer, so keep practicing with new questions.'''
 #adds feedback for responses that did not lose points
 interview_df.loc[~interview_df.question.isin(clean_overtime_q), 'feedback'] = interview_df['feedback'] + '''
-You answered within 2 minutes.'''
+-You answered within 2 minutes.'''
 
 #Creating a list of all the answers where user responded in less than 3 sentences.
 short_sent = []
@@ -151,13 +155,14 @@ for i in range(0, len(answers)):
 #Will store user's answers that didn't meet either of the length criteria.
 short_answers = sorted(np.unique(short_sent + less_45_words))     
 #2.SCORE - if user's answer is too short -2 from score column.
-interview_df.loc[interview_df.answers.isin(short_answers), 'score'] = interview_df['score'] - 2
+interview_df.loc[interview_df.answers.isin(short_answers), 'score'] = interview_df['score'] - 1
 #adds feedback for responses that lost points
 interview_df.loc[interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] + '''
-Your answer is too short. You should use the time to express your answer with more detail.'''
+-Your answer is too short.
+ You should use the time to express your answer with more detail.'''
 #adds feedback for responses that did not lose points
 interview_df.loc[~interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] + '''
-Your answer was sufficient in length.'''
+-Your answer was sufficient in length.'''
 
 #uses spacy to identify entities, saves entity text and label to a dictionary
 def get_ents(responses):
@@ -226,22 +231,54 @@ def eval_ents(responses):
 no_ents = eval_ents(answers)
 
 #3. If user's answers used less than 1 named entity
-interview_df.loc[interview_df.answers.isin(no_ents), 'score'] = interview_df['score'] - 3
+interview_df.loc[interview_df.answers.isin(no_ents), 'score'] = interview_df['score'] - 1
 #add the feedback to the dataframe
 #adds feedback for responses that lost points
 interview_df.loc[interview_df.answers.isin(no_ents), 'feedback'] = interview_df['feedback'] + '''
-You did not include identifying information, such as company names. Including these details can give the 
-interviewer a better understanding of your experience.'''
+-You did not include identifying information, such as company, organization, or supervisor names.
+ Including these details can give the interviewer a better understanding of your experience.'''
 #adds feedback for responses that did not lose points
 interview_df.loc[~interview_df.answers.isin(no_ents), 'feedback'] = interview_df['feedback'] + '''
-You included identifying information for the organizations you worked for. Great work!'''
-
+-You included identifying information for the organizations you worked for.'''
 
 #filter interview df for all of user's answers that were less than 7
 low_score_df = interview_df[interview_df.score < 7]
 #add sample answers for low score answers
 low_sample_df = pd.merge(low_score_df, all_questions_df[['question','sample']], left_on='question', 
                         right_on='question', how ='inner')
+
+#4. Use sentiment analysis to compare the sentiment of the answer to question
+def senti_analysis(dataframe):
+    #declare variables needed
+    sia = SentimentIntensityAnalyzer()
+    answ_holder = []
+    ques_holder = []
+    
+    #calculate sentiment analysis scores for all questions
+    for row in dataframe['question']:
+        ques_holder.append(sia.polarity_scores(row))
+        
+    #calculate sentiment analysis scores for all answers
+    for row in dataframe['answers']:
+        answ_holder.append(sia.polarity_scores(row))
+    
+    # loop through the scored answers and questions and add the feedback
+    for i in range(0, len(ques_holder)):
+        
+        # if the compound score from the sentiment analysis of the question is lower than the answer, it is more positive
+        # generally only answer scores lower than a question score is bad, as it means the tone does not match
+        # if ques > answer, subtract 3 points
+        if ques_holder[i]['compound'] <= answ_holder[i]['compound']:
+            dataframe.at[i, 'feedback'] = dataframe.at[i, 'feedback'] + '''
+-The sentiment of your response matches the question asked.'''
+        else:
+            dataframe.at[i, 'score'] = dataframe.at[i, 'score'] - 1
+            dataframe.at[i, 'feedback'] = dataframe.at[i, 'feedback'] + '''
+-The sentiment of your response does not match the answer.
+ Try to be more positive in your response, as this will leave a better impression.'''
+
+# run the sentinment analysis function and the results to feedback
+senti_analysis(interview_df)
 
 
 # Compile the feedback to be printed and saved to log
@@ -254,16 +291,18 @@ current_time = now.strftime('%H:%M')
 current_date = now.strftime('%B %d, %Y')
 
 #add the date and time to the feedback holder
-compl_feedback += '\nGenerated on: ' + current_date + ' at ' + current_time
+compl_feedback += '\nGenerated on: ' + current_date + ' at ' + current_time + '\n\n-----------------------------------------------\n'
 
 #loop through the dataframe and add to the feedback holder
 for ind in interview_df.index: 
-    compl_feedback += '\n\nQuestion ' + str(ind + 1) + ': ' + interview_df['question'][ind]
+    
+    compl_feedback += '\nQuestion ' + str(ind + 1) + ': ' + interview_df['question'][ind]
     compl_feedback += '\nAnswer ' + str(ind + 1) + ': ' + interview_df['answers'][ind]
-    compl_feedback += '\nScore: ' + str(interview_df['score'][ind]) + '/7'
+    compl_feedback += '\n\nScore: ' + str(interview_df['score'][ind]) + '/' + str(possible_total_score)
     compl_feedback += '\nDetailed Feedback: ' + interview_df['feedback'][ind]
     compl_feedback += '\nSample answer: "'
     compl_feedback += interview_df['sample'][ind] + '"'
+    compl_feedback += '\n\n-----------------------------------------------\n'
 #print the feedback to console
 print(compl_feedback)
 
@@ -271,4 +310,4 @@ print(compl_feedback)
 f = open('feedback.txt', 'w', encoding='utf-8')
 f.write(compl_feedback)
 f.close()
-print('\nThe graded feedback file has been created for your reference.')
+print('The graded feedback file has been created for your reference.')
