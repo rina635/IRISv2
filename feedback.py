@@ -131,17 +131,14 @@ all_overtime = overtime_q(interview_2)
 all_overtime = [ x for x in all_overtime if "*" not in x ]
 all_overtime = list(filter(None,all_overtime))
 
-#Remove IRIS: Question: so only getting the question text.
+#Remove IRIS: Question part from overtime list so only getting the question text.
 clean_overtime_q =[]
-IRIS_q_string = 'IRIS: Question:'
-if IRIS_q_string in all_overtime:
-    for i in range(0, len(all_overtime)):
-        q = all_overtime[i]
-        clean_q = q.split(': ')
-        q_only = clean_q[2]
-        clean_overtime_q.append(q_only)
-else:
-    clean_overtime_q.append('')        
+iris_questions = [i for i in all_overtime if re.search(r'IRIS: Question', i)]
+for i in range(0, len(iris_questions)):
+    q = iris_questions[i]
+    clean_q = q.split(': ')
+    q_only = clean_q[2]
+    clean_overtime_q.append(q_only)
 
 #https://stackoverflow.com/questions/37976823/how-to-conditionally-update-dataframe-column-in-pandas-based-on-list
 #1. SCORE - if user went over time for that questions -2 from score column
