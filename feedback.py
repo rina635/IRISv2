@@ -34,7 +34,7 @@ with open('user_response.log') as file:
     interview = file.read().splitlines()
 
 #If user exited session then need to execute so that can capture before user requested to end the session.
-def whole_interview(interview):    
+def whole_interview(list):    
     end_sesh = re.compile('end session', re.IGNORECASE)
     for i in range(len(interview)):
         if re.search(end_sesh, interview[i]):
@@ -78,24 +78,26 @@ def retrieve_help(interview):
             #question where user asked for help index:
                 q_help_index = i - 2
                 question_to_remove = (interview[q_help_index])
-                question_to_remove = question_to_remove.split(': ')
-                question_to_remove = question_to_remove[2]
+
                 
                 return question_to_remove
-            
-            
+
+
 #Only getting the interview before the session ends
 interview_2 = whole_interview(interview)
+#remove the question where user answered HELP
+help_q = retrieve_help(interview_2)
+#if help was not used by the user then replaces variable with '@@@'
+value = None
+help_q = '@@@@'if value is None else value
+#since interview session won't have @@@ it will remain the same.
+if help_q in interview_2: interview_2.remove(help_q)
 #Retrieving all user's answers
-all_answers = a_search(interview_2)
-#remove any answers where user asked for help
-answers = [ x for x in all_answers if 'HELP' not in x ] 
-answers = [ x for x in all_answers if 'help' not in x ] 
+answers = a_search(interview_2)
 
 #Final list of questions asked.
-all_questions = q_search(interview_2)
-help_q = retrieve_help(interview_2)
-questions = [ x for x in all_questions if help_q  not in x ] 
+questions = q_search(interview_2)
+ 
 possible_total_score = 4
 
 #Create a dataframe of Interview session with just the questions and answers
@@ -117,7 +119,7 @@ def overtime_q(list):
         if re.search(asterisk, interview[i]):
             #Question is 2 rows away, using index to locate question in list
             q_index = i - 2
-            overtime_q = interview[q_index]    
+            overtime_q = interview[q_index] 
             overtime_qs.append(overtime_q)
     return overtime_qs
 
@@ -257,12 +259,6 @@ interview_df.loc[interview_df.answers.isin(no_ents), 'feedback'] = interview_df[
 interview_df.loc[~interview_df.answers.isin(no_ents), 'feedback'] = interview_df['feedback'] + '''
 -You included identifying information for the organizations you worked for.'''
 
-#filter interview df for all of user's answers that were less than 7
-low_score_df = interview_df[interview_df.score < 7]
-#add sample answers for low score answers
-low_sample_df = pd.merge(low_score_df, all_questions_df[['question','sample']], left_on='question', 
-                        right_on='question', how ='inner')
-
 #4. Use sentiment analysis to compare the sentiment of the answer to question
 def senti_analysis(dataframe):
     #declare variables needed
@@ -296,6 +292,13 @@ def senti_analysis(dataframe):
 # run the sentinment analysis function and the results to feedback
 senti_analysis(interview_df)
 
+#gather instances where user got less than 2/4:
+low_score_df = interview_df.loc[(interview_df.score <= 2)]
+#Add sample answers for low scored questions.
+low_sample_df = pd.merge(low_score_df, all_questions_df[['question','sample']], left_on='question', 
+                        right_on='question', how ='inner')
+#merge low scores with original dataframe, anything that do
+final_df = pd.merge(interview_df, low_sample_df, on= ['question', 'answers'], how = 'outer')    
 #merge question and add sample answer into the main dataframe
 interview_df = pd.merge(interview_df, all_questions_df[['question','sample']], left_on='question', right_on='question', how ='inner')
 
