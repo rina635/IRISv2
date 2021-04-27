@@ -93,7 +93,7 @@ def start_conversation():
     if new_user.lower() == 'yes':
         iris_instructions()
     elif new_user.lower() == 'no':
-        print(bot_formatted_name + 'Great! If you need assistance please type in "HELP".')
+        print('\n' + bot_formatted_name + 'Great! If you need assistance please type in "HELP".')
     
     # delay the program for 2 seconds before beginning the program
     # code referenced from source [9]
@@ -101,7 +101,7 @@ def start_conversation():
     
     #print next steps
     print('Let\'s get started!\n')
-    print('----------------------\n')
+    print('----------------------')
     return name
 
 # calls the instructions for using the program 
@@ -192,7 +192,7 @@ while n >= 5 and n <= 10 and question_counter < n:
     question_counter = question_counter + 1
     
     # print the question and category for the user
-    print('{}The category is: {}'.format(bot_formatted_name, category))
+    print('\n{}The category is: {}'.format(bot_formatted_name, category))
     print('{}Question {}: {}'.format(bot_formatted_name, question_counter, question))
     
     # start timining how long user takes to respond after question has been printed out.

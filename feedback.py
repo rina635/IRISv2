@@ -196,16 +196,16 @@ def length_check(aList):
 def senti_analysis(dataframe):
     #declare variables needed
     sia = SentimentIntensityAnalyzer()
-    answers = []
     questions = []
+    answers = []
     
     #calculate sentiment analysis scores for all questions
     for row in dataframe['question']:
-        ques_holder.append(sia.polarity_scores(row))
+        questions.append(sia.polarity_scores(row))
         
     #calculate sentiment analysis scores for all answers
     for row in dataframe['answers']:
-        answ_holder.append(sia.polarity_scores(row))
+        answers.append(sia.polarity_scores(row))
     return answers, questions
 
 '''----------------------------------------------
@@ -304,7 +304,7 @@ interview_df.loc[interview_df.answers.isin(short_answers), 'score'] = interview_
 #adds feedback for responses that lost points
 interview_df.loc[interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] + '''
 -Your answer is too short.
- You should use the time to express your answer with more detail.'''
+ You should express your answer with more detail. A good answer will be atleast 3 sentences and 45 words long.'''
  
 #adds feedback for responses that did not lose points
 interview_df.loc[~interview_df.answers.isin(short_answers), 'feedback'] = interview_df['feedback'] + '''
