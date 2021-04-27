@@ -1,36 +1,27 @@
-
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Final Assignment: Team 3 - Rafeef Baamer, Ashish Hingle, Rina Lidder, & Andy Nguyen
-
 Description: IRIS (short for INSTRUCTIVE RESPONSE INTERVIEW SIMULATOR) is a chatbot solution that primarily serves as an interview simulator to help users
 practice interview questions in a broad context. This project aims to implement the solution as an extension to the ELIZA model, described as the first chatbot
 system (Weizenbaum 1976). It is primarily designed for students, but any professional can use the service to practice common interview questions and receive
 feedback based on their responses. After the practice session, the chatbot will provide the user a rating score of how they did and describe some aspects that
 can be improved.
-
 This file is the initial file used to receive user input. To score user input, please use feedback.py.
-
 The main goals with IRIS were to:
 - Create a model that can preprocess, algorithmically-process, and generate sentences. 
 - Provide real-time responses to replicate a typical in-person interview. 
 - Provide meaningful feedback to the user.
-
 Usage Instructions:
 1) Run the iris.py file
 2) Enter user name on prompt
 3) Enter the number of desired questions on prompt
 4) Read through the question and enter the response
 5) After all questions are answered, or program is terminated, use the associated feedback.py file to score the responses
-
 'HELP' can be used for additional information, and 'END SESSION' can be used to terminate the program early.
-
 Logic:
-
 External Library dependencies:
 NLTK, Pandas 
-
 Resources used for this lab come from the materials provided in the AIT 590 course materials.
 - [1] Lecture powerpoints (AIT 590)
 - [2] Stanford University Prof. Dan Jurafsky's Video Lectures (https://www.youtube.com/watch?v=zQ6gzQ5YZ8o)
@@ -41,7 +32,6 @@ Resources used for this lab come from the materials provided in the AIT 590 cour
 - [7] Logging files: https://stackoverflow.com/questions/38409450/logging-to-python-file-doesnt-overwrite-file-when-using-the-mode-w-argument-t
 - [8] Logging files: https://www.youtube.com/watch?v=-ARI4Cz-awo&t=616s
 - [9] 2 second delay - https://www.guru99.com/python-time-sleep-delay.html
-
 """
 # import and initialize libraries
 import random, re , os, sys, logging, time
@@ -120,9 +110,7 @@ def iris_instructions():
 1) Choose the number of questions (5 - 10 questions).
 2) Answer each question within 2 minutes.
 3) After you have completed your session, use the feedback.py file to score your responses.
-
 Some information to help you succeed with your preperation:
-
 - The goal of interacting with me is to ensure you're able to answer the questions in the best way you can.
 - You should discuss specific experiences and details, including names of companies, organizations and supervisors.
 - Express your past experiences in detail and use descriptive language. Aim for at least 3 full sentences.
@@ -178,11 +166,17 @@ questions_df = load_questions(dname)
 
 # start the conversation
 userName = start_conversation()
-n = int(input('''{}How many questions would you like for today? \nPlease select a number between 5 and 10.\n'''
-              .format(bot_formatted_name)))
 
 # reformat the user's name for the chat.
 user_formatted_name = userName + ': '
+
+# validates integers only and display a message anything else is entered 
+try:
+    n = int(input('''{}How many questions would you like for today? \nPlease select a number between 5 and 10.\n'''
+              .format(bot_formatted_name)))
+except ValueError:
+    n = int(input('''{}Invalid number of questions. Please select a number between 5 and 10.\n'''
+              .format(bot_formatted_name)))
 
 # display a message if number of questions requested doesn't fall between 5-10  
 while n < 5 or n > 10:
@@ -204,25 +198,26 @@ while n >= 5 and n <= 10 and question_counter < n:
     # start timining how long user takes to respond after question has been printed out.
     Thread(target = idle_check).start()
     
-    # logs IRIS Category and question declaration.
+    # logs IRIS Category and question declaration
     logging.debug('{}The category is: {}'.format(bot_formatted_name, category))
     logging.debug('{}Question {}: {}\n'.format(bot_formatted_name, question_counter, question))
 
     # takes user's input
     response = input(user_formatted_name)
-    #logging user's response into log file without their name.
+    #logging user's response into log file without their name
     log_response = logging.debug('{}'.format(response))
 
-    # response to whitespace only
+    # response to whitespace only, subtracts 1 from the counter
     if re.match(r'^\s*$',response): 
         print('Okay, I will move on to the next question.')
+        question_counter = question_counter - 1 
 
-    # runs help function with instructions when user calls for help.
+    # runs help function with instructions when user calls for help, subtracts 1 from the counter
     elif re.match(r'HELP', response, re.IGNORECASE):
         iris_instructions()
         question_counter = question_counter - 1 
 
-    # exits the conversation if user requests to end session.
+    # exits the conversation if user requests to end session
     elif re.match(r'END SESSION', response, re.IGNORECASE):
         break
 

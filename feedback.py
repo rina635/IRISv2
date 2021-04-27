@@ -375,7 +375,8 @@ final_df = pd.merge(interview_df, low_sample_df, on= ['question', 'answers'], ho
 interview_df = pd.merge(interview_df, all_questions_df[['question','sample']], left_on='question', right_on='question', how ='inner')
 
 # Remove answers where user requested help
-interview_df = interview_df[(interview_df.answers != 'HELP') & (interview_df.answers != 'help')& (interview_df.answers != 'Help')] 
+#interview_df = interview_df[(interview_df.answers != 'HELP') & (interview_df.answers != 'help')& (interview_df.answers != 'Help')] 
+interview_df = interview_df[~interview_df.answers.str.contains("HELP", na=False, case=False)]
 
 # Compile the feedback to be printed and saved to log
 # declare a feedback holder that will cummulate all feedback
