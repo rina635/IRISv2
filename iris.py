@@ -82,7 +82,7 @@ def start_conversation():
     # check if name is empty or not String before contnuing, if so do not move forward until a name is input
     while True:
         name = input("Before we begin, what is your name?\n")
-        if not name.isalpha() or name == "":
+        if any(char.isdigit() for char in name) or name == "" or re.match(r'^\s*$',name):    
             print("Please enter a valid name that must be string")
             continue
         break
