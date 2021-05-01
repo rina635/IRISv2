@@ -77,13 +77,17 @@ def start_conversation():
     print('{}{}, I am {} the Instructive Response Interview Simulator. Here to help you prepare for your next interview!'
           .format(bot_formatted_name, greeting(), bot_name))
     
-    # save the users name as an input
-    name = input(bot_formatted_name + 'Before we begin, what is your name?\n')
-    
-    # check if name is empty before contnuing, if so do not move forward until a name is input
-    while name == '':
-        name = input(bot_formatted_name + 'Invalid response. I need to know how to address you. What is your name?\n')
-    
+
+
+    # check if name is empty or not String before contnuing, if so do not move forward until a name is input
+    while True:
+        name = input("Before we begin, what is your name?\n")
+        if not name.isalpha() or name == "":
+            print("Please enter a valid name that must be string")
+            continue
+        break
+
+
     print(bot_formatted_name + 'Nice to meet you, {}! To end the session, type "END SESSION". For help, type "HELP".'.format(name))  
     # ask if user's has used IRIS before
     new_user = input(bot_formatted_name + 'Is this your first time interacting with me?\nType "Yes" or "No"\n')     
@@ -225,19 +229,23 @@ while question_counter < n:
     #logging user's response into log file without their name
     log_response = logging.debug('{}'.format(response))
 
-    # response to whitespace only, subtracts 1 from the counter
-    if re.match(r'^\s*$',response): 
-        print('Okay, I will move on to the next question.')
-        question_counter = question_counter - 1 
+    if response:
+         # response to whitespace only, subtracts 1 from the counter
+        if re.match(r'^\s*$',response): 
+             print('IRIS: Okay, I will move on to the next question.')
+             question_counter = question_counter - 1 
 
-    # runs help function with instructions when user calls for help, subtracts 1 from the counter
-    elif re.match(r'HELP', response, re.IGNORECASE):
-        iris_instructions()
-        question_counter = question_counter - 1 
+        # runs help function with instructions when user calls for help, subtracts 1 from the counter
+        elif re.match(r'HELP', response, re.IGNORECASE):
+            iris_instructions()
+            question_counter = question_counter - 1 
 
-    # exits the conversation if user requests to end session
-    elif re.match(r'END SESSION', response, re.IGNORECASE):
-        break
+        # exits the conversation if user requests to end session
+        elif re.match(r'END SESSION', response, re.IGNORECASE):
+            break
+    else:
+        print('IRIS: You did not answer the question. I will move to the next question')
+   
 
 #Once question limit is reached/user ends session , will output this:
 print('{}It was really great learning more about you, {} this is the end of our session.'.format(bot_formatted_name, userName))
