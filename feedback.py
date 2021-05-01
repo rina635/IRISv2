@@ -401,8 +401,9 @@ for ind in interview_df.index:
     compl_feedback += '\nAnswer ' + str(ind + 1) + ': ' + interview_df['answers'][ind]
     compl_feedback += '\n\nScore: ' + str(interview_df['score'][ind]) + '/' + str(possible_total_score)
     compl_feedback += '\nDetailed Feedback: ' + interview_df['feedback'][ind]
-    compl_feedback += '\nSample answer: "'
-    compl_feedback += interview_df['sample'][ind] + '"'
+    if interview_df['score'][ind] < possible_total_score:
+        compl_feedback += '\nSample answer: "'
+        compl_feedback += interview_df['sample'][ind] + '"'
     compl_feedback += '\n\n-----------------------------------------------\n'
 # print the feedback to console
 print(compl_feedback)
