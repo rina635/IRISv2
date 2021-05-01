@@ -45,12 +45,12 @@ Resources used for this lab come from the materials provided in the AIT 590 cour
 """
 # import and initialize libraries
 import os, sys, re, csv, spacy
-from nltk import pos_tag
 import pandas as pd
 from nltk import sent_tokenize, word_tokenize  
 import numpy as np
 from datetime import datetime
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
 nlp = spacy.load('en_core_web_sm')
 
 # declare global variables
@@ -405,11 +405,17 @@ for ind in interview_df.index:
         compl_feedback += '\nSample answer: "'
         compl_feedback += interview_df['sample'][ind] + '"'
     compl_feedback += '\n\n-----------------------------------------------\n'
-# print the feedback to console
-print(compl_feedback)
 
+# check if iris has been run before feedback is run
+if len(compl_feedback) < 110:
+    compl_feedback = compl_feedback + '\nYou must run iris.py before scoring.'
+    print(compl_feedback)
+else: 
+    # print the feedback to console
+    print(compl_feedback)
+    print('The graded feedback file has been created for your reference.')
+    
 # save the feedback to a text file.
 f = open('feedback.txt', 'w', encoding='utf-8')
 f.write(compl_feedback)
 f.close()
-print('The graded feedback file has been created for your reference.')

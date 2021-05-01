@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 """
 Final Assignment: Team 3 - Rafeef Baamer, Ashish Hingle, Rina Lidder, & Andy Nguyen
 Description: IRIS (short for INSTRUCTIVE RESPONSE INTERVIEW SIMULATOR) is a chatbot solution that primarily serves as an interview simulator to help users
@@ -38,6 +39,8 @@ import random, re , os, sys, logging, time
 import pandas as pd 
 from datetime import datetime
 from threading import Thread
+import nltk
+from nltk.corpus import words
 
 # creates a log file of interview session, will rewrite the log file every time code executed.
 # code referenced from source [7] and [8]
@@ -74,13 +77,17 @@ def start_conversation():
     print('{}{}, I am {} the Instructive Response Interview Simulator. Here to help you prepare for your next interview!'
           .format(bot_formatted_name, greeting(), bot_name))
     
-    # save the users name as an input
-    name = input(bot_formatted_name + 'Before we begin, what is your name?\n')
-    
-    # check if name is empty before contnuing, if so do not move forward until a name is input
-    while name == '':
-        name = input(bot_formatted_name + 'Invalid response. I need to know how to address you. What is your name?\n')
-    
+
+
+    # check if name is empty or not String before contnuing, if so do not move forward until a name is input
+    while True:
+        name = input("Before we begin, what is your name?\n")
+        if not name.isalpha() or name == "":
+            print("Please enter a valid name that must be string")
+            continue
+        break
+
+
     print(bot_formatted_name + 'Nice to meet you, {}! To end the session, type "END SESSION". For help, type "HELP".'.format(name))  
     # ask if user's has used IRIS before
     new_user = input(bot_formatted_name + 'Is this your first time interacting with me?\nType "Yes" or "No"\n')     
@@ -148,6 +155,16 @@ def idle_check():
     x = '*'
     logging.debug(x) 
 
+'''
+def handle_nonesense(answer):
+    token_answer = nltk.word_tokenize(answer)
+    for i in token_answer:
+        if i not in words.words():
+            #print("Please provide answer with real words")
+            return False 
+    return True
+'''
+
 '''----------------------------------------------
  start of code execution
 ----------------------------------------------'''
@@ -171,17 +188,20 @@ userName = start_conversation()
 user_formatted_name = userName + ': '
 
 # validates integers only and display a message anything else is entered 
-try:
-    n = int(input('''{}How many questions would you like for today? \nPlease select a number between 5 and 10.\n'''
-              .format(bot_formatted_name)))
-except ValueError:
-    n = int(input('''{}Invalid number of questions. Please select a number between 5 and 10.\n'''
-              .format(bot_formatted_name)))
 
-# display a message if number of questions requested doesn't fall between 5-10  
-while (n < 5 or n > 10) and not n.isdigit():
-    n = int(input('''{}Invalid number of questions. Please select a number between 5 and 10.\n'''
-              .format(bot_formatted_name)))
+while True:
+    print("How many questions would you like for today? \nPlease select a number between 5 and 10.\n")
+    n = input()
+    try:
+        n = int(n)
+    except:
+        print("please enter a numeric digit")
+        continue
+    if n < 5 or n >10:
+        print("Invalid number of questions. Please select a number between 5 and 10")
+        continue
+    break
+
 
 # interview session will continue until the number of questions has been reached    
 while question_counter < n: 
@@ -209,19 +229,23 @@ while question_counter < n:
     #logging user's response into log file without their name
     log_response = logging.debug('{}'.format(response))
 
-    # response to whitespace only, subtracts 1 from the counter
-    if re.match(r'^\s*$',response): 
-        print('Okay, I will move on to the next question.')
-        question_counter = question_counter - 1 
+    if response:
+         # response to whitespace only, subtracts 1 from the counter
+        if re.match(r'^\s*$',response): 
+             print('IRIS: Okay, I will move on to the next question.')
+             question_counter = question_counter - 1 
 
-    # runs help function with instructions when user calls for help, subtracts 1 from the counter
-    elif re.match(r'HELP', response, re.IGNORECASE):
-        iris_instructions()
-        question_counter = question_counter - 1 
+        # runs help function with instructions when user calls for help, subtracts 1 from the counter
+        elif re.match(r'HELP', response, re.IGNORECASE):
+            iris_instructions()
+            question_counter = question_counter - 1 
 
-    # exits the conversation if user requests to end session
-    elif re.match(r'END SESSION', response, re.IGNORECASE):
-        break
+        # exits the conversation if user requests to end session
+        elif re.match(r'END SESSION', response, re.IGNORECASE):
+            break
+    else:
+        print('IRIS: You did not answer the question. I will move to the next question')
+   
 
 #Once question limit is reached/user ends session , will output this:
 print('{}It was really great learning more about you, {} this is the end of our session.'.format(bot_formatted_name, userName))
