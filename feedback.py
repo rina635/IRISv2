@@ -48,7 +48,7 @@ import os, sys, re, csv, spacy
 import pandas as pd
 from nltk import sent_tokenize, word_tokenize  
 import numpy as np
-from datetime import datetime
+from datetime import datetime, date
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 
 nlp = spacy.load('en_core_web_sm')
@@ -416,6 +416,8 @@ else:
     print('The graded feedback file has been created for your reference.')
     
 # save the feedback to a text file.
-f = open('feedback.txt', 'w', encoding='utf-8')
+date = date.today()
+date_string = date.strftime("%b-%d-%Y")
+f = open('feedback/feedback-' + date_string + '.txt', 'w', encoding='utf-8')
 f.write(compl_feedback)
 f.close()
