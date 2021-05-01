@@ -39,6 +39,8 @@ import random, re , os, sys, logging, time
 import pandas as pd 
 from datetime import datetime
 from threading import Thread
+import nltk
+from nltk.corpus import words
 
 # creates a log file of interview session, will rewrite the log file every time code executed.
 # code referenced from source [7] and [8]
@@ -149,6 +151,16 @@ def idle_check():
     x = '*'
     logging.debug(x) 
 
+'''
+def handle_nonesense(answer):
+    token_answer = nltk.word_tokenize(answer)
+    for i in token_answer:
+        if i not in words.words():
+            #print("Please provide answer with real words")
+            return False 
+    return True
+'''
+
 '''----------------------------------------------
  start of code execution
 ----------------------------------------------'''
@@ -172,17 +184,20 @@ userName = start_conversation()
 user_formatted_name = userName + ': '
 
 # validates integers only and display a message anything else is entered 
-try:
-    n = int(input('''{}How many questions would you like for today? \nPlease select a number between 5 and 10.\n'''
-              .format(bot_formatted_name)))
-except ValueError:
-    n = int(input('''{}Invalid number of questions. Please select a number between 5 and 10.\n'''
-              .format(bot_formatted_name)))
 
-# display a message if number of questions requested doesn't fall between 5-10  
-while (n < 5 or n > 10) and not n.isdigit():
-    n = int(input('''{}Invalid number of questions. Please select a number between 5 and 10.\n'''
-              .format(bot_formatted_name)))
+while True:
+    print("How many questions would you like for today? \nPlease select a number between 5 and 10.\n")
+    n = input()
+    try:
+        n = int(n)
+    except:
+        print("please enter a numeric digit")
+        continue
+    if n < 5 or n >10:
+        print("Invalid number of questions. Please select a number between 5 and 10")
+        continue
+    break
+
 
 # interview session will continue until the number of questions has been reached    
 while question_counter < n: 
