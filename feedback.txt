@@ -1,22 +1,10 @@
 IRIS FEEDBACK
-Generated on: April 30, 2021 at 20:07
+Generated on: April 30, 2021 at 23:52
 
 -----------------------------------------------
 
-Question 1:  Tell me about a time you’ve experienced a major setback, and how you handled it.
-Answer 1: I was a Software Engineer at Microsoft and I was a project lead for 10 different projects. I did a really good job, and I completed my projects within the deadlines. My manager commended me on my good work and I was given a promotion due to my good job on the projects.
-
-Score: 4/4
-Detailed Feedback: 
--You answered within 2 minutes.
--Your answer was sufficient in length.
--You included identifying information for the organizations you worked for.
--The sentiment of your response matches the question asked.
-
------------------------------------------------
-
-Question 2:  How do you review your work to identify errors before finalizing a project?
-Answer 2: asadasdsdasd
+Question 1:  Tell me about a time where your gut feelings have been wrong.
+Answer 1: saddasdas
 
 Score: 2/4
 Detailed Feedback: 
@@ -26,43 +14,12 @@ Detailed Feedback:
 -You did not include identifying information, such as company, organization, or supervisor names.
  Including these details can give the interviewer a better understanding of your experience.
 -The sentiment of your response matches the question asked.
-Sample answer: "I make sure to verify the final product against what was requested. While I worked at Amazon, it was important to do so to make sure technological scope has integrity. It helped us run lean throughout."
+Sample answer: "I had a gut feeling turn to be wrong while I worked at Nokia. I created a roadmap for future the future development of a product we were working on. Unfortunately, a software package brought in did the same, and due to the vendor relationships we decided to go with the software. It was a great learning experience at the end of the day, so I did not mind that it was not ultimately implemented."
 
 -----------------------------------------------
 
-Question 3:  Have you ever had to hand off a stressful situation to a coworker or supervisor?
-Answer 3: i hate job
-
-Score: 1/4
-Detailed Feedback: 
--You answered within 2 minutes.
--Your answer is too short.
- You should express your answer with more detail. A good answer will be atleast 3 sentences and 45 words long.
--You did not include identifying information, such as company, organization, or supervisor names.
- Including these details can give the interviewer a better understanding of your experience.
--The sentiment of your response does not match the answer.
- Try to be more positive in your response, as this will leave a better impression.
-Sample answer: "TBA"
-
------------------------------------------------
-
-Question 4:  Have you ever noticed a manager or boss violating company policy? If so, how did you handle it?
-Answer 4: nope
-
-Score: 2/4
-Detailed Feedback: 
--You answered within 2 minutes.
--Your answer is too short.
- You should express your answer with more detail. A good answer will be atleast 3 sentences and 45 words long.
--You did not include identifying information, such as company, organization, or supervisor names.
- Including these details can give the interviewer a better understanding of your experience.
--The sentiment of your response matches the question asked.
-Sample answer: "I have not had this happen before. I think it is important for all members of a team to be held to the same standard. In my previous job at Lenovo, we were encouraged to bring this issues to HR, because safety of the team is a collaborative effort."
-
------------------------------------------------
-
-Question 5:  What do you do if your team disagrees with your manager’s decisions?
-Answer 5: quit
+Question 2:  Tell me about a time you were stressed at work and how you handled it.
+Answer 2: sadsaasddasads
 
 Score: 2/4
 Detailed Feedback: 
@@ -73,5 +30,50 @@ Detailed Feedback:
  Including these details can give the interviewer a better understanding of your experience.
 -The sentiment of your response matches the question asked.
 Sample answer: "TBA"
+
+-----------------------------------------------
+
+Question 3:  Have you ever gone to bat for your team in opposition to a higher-up in your company? How did you do it, and how did it work out?
+Answer 3: dasdasdasdas
+
+Score: 2/4
+Detailed Feedback: 
+-You answered within 2 minutes.
+-Your answer is too short.
+ You should express your answer with more detail. A good answer will be atleast 3 sentences and 45 words long.
+-You did not include identifying information, such as company, organization, or supervisor names.
+ Including these details can give the interviewer a better understanding of your experience.
+-The sentiment of your response matches the question asked.
+Sample answer: "Yes, during my time at Bode Technology my supervisor had begun frustrated with the pace new trainees had been sampling. In our conversation, it became apparent that she had not been aware that the lab wasn't getting the tools they needed to sample in a timely manner. I decided to walk through some of the limitations our team has had and work with her to set up an advisory committee. This advisory committee helped enhance the communication between leadership and allowed for more transparency in the company."
+
+-----------------------------------------------
+
+Question 4:  What do you do if a team member on your project isn’t pulling their weight?
+Answer 4: dasdsadasads
+
+Score: 2/4
+Detailed Feedback: 
+-You answered within 2 minutes.
+-Your answer is too short.
+ You should express your answer with more detail. A good answer will be atleast 3 sentences and 45 words long.
+-You did not include identifying information, such as company, organization, or supervisor names.
+ Including these details can give the interviewer a better understanding of your experience.
+-The sentiment of your response matches the question asked.
+Sample answer: "TBA"
+
+-----------------------------------------------
+
+Question 5:  Have you ever had a fellow employee throw you under the bus? How did you handle it?
+Answer 5: adsdasdasdas
+
+Score: 2/4
+Detailed Feedback: 
+-You answered within 2 minutes.
+-Your answer is too short.
+ You should express your answer with more detail. A good answer will be atleast 3 sentences and 45 words long.
+-You did not include identifying information, such as company, organization, or supervisor names.
+ Including these details can give the interviewer a better understanding of your experience.
+-The sentiment of your response matches the question asked.
+Sample answer: "Since all of us on the team are working together towards a single goal, I think it is important to create an environment where mistakes are learning opportunities. When this happened to me as an Amazon Intern, I notified the co-worker 1-on-1. They were very thankful and we caught a bug that could have been problematic down the line."
 
 -----------------------------------------------
