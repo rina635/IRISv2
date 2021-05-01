@@ -179,12 +179,12 @@ except ValueError:
               .format(bot_formatted_name)))
 
 # display a message if number of questions requested doesn't fall between 5-10  
-while n < 5 or n > 10:
+while (n < 5 or n > 10) and not n.isdigit():
     n = int(input('''{}Invalid number of questions. Please select a number between 5 and 10.\n'''
               .format(bot_formatted_name)))
 
 # interview session will continue until the number of questions has been reached    
-while n >= 5 and n <= 10 and question_counter < n: 
+while question_counter < n: 
     # save the question and category from the dataset 
     question, category = choose_question(questions_df)
     
@@ -196,7 +196,9 @@ while n >= 5 and n <= 10 and question_counter < n:
     print('{}Question {}: {}'.format(bot_formatted_name, question_counter, question))
     
     # start timining how long user takes to respond after question has been printed out.
-    Thread(target = idle_check).start()
+    th = Thread(target = idle_check)
+    th.daemon = True
+    th.start()
     
     # logs IRIS Category and question declaration
     logging.debug('{}The category is: {}'.format(bot_formatted_name, category))
@@ -223,3 +225,5 @@ while n >= 5 and n <= 10 and question_counter < n:
 
 #Once question limit is reached/user ends session , will output this:
 print('{}It was really great learning more about you, {} this is the end of our session.'.format(bot_formatted_name, userName))
+handler.close()
+sys.exit()
