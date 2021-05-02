@@ -18,7 +18,7 @@ The baseline solution for **IRIS** serves to match currently available commercia
 >
 >Before we begin, what is your name?
 >User Name
->IRIS: Nice to meet you, User Name! To end the session, type "END SESSION". For help, type "HELP".>
+>IRIS: Nice to meet you, User Name! To end the session, type "END SESSION". For help, type "HELP".
 >
 >IRIS: Is this your first time interacting with me?
 >Type "Yes" or "No"
@@ -46,7 +46,7 @@ The baseline solution for **IRIS** serves to match currently available commercia
 >IRIS: The category is: Interactions
 >IRIS: Question 1:  Tell me about the best review you’ve ever gotten from a customer.
 >
->User Name: While I worked on a team at George's Ice-cream Parlor, one of our clients gave me a review that said, "I went above an >beyond what was required to get the project right." That was the best review I have ever got. I think it also describes my attitude >towards customer service in all the jobs I have held before.
+>User Name: While I worked on a team at George's Ice-cream Parlor, one of our clients gave me a review that said, "I went above an beyond what was required to get the project right." That was the best review I have ever got. I think it also describes my attitude towards customer service in all the jobs I have held before.
 >
 >IRIS: The category is: Teamwork
 >IRIS: Question 2:  What would you do if your team was waiting on another department dragging their heels?
@@ -62,7 +62,7 @@ The baseline solution for **IRIS** serves to match currently available commercia
 >-----------------------------------------------
 >
 >Question 1:  Tell me about the best review you’ve ever gotten from a customer.
->Answer 1: While I worked on a team at Amazon, one of our clients gave me a review that said, "I went above an beyond what was >required to get the project right." That was the best review I have ever got. I think it also describes my attitude towards >customer service in all the jobs I have held before.
+>Answer 1: While I worked on a team at Amazon, one of our clients gave me a review that said, "I went above an beyond what was required to get the project right." That was the best review I have ever got. I think it also describes my attitude towards customer service in all the jobs I have held before.
 >
 >Score: 4/4
 >Detailed Feedback: 
@@ -70,12 +70,14 @@ The baseline solution for **IRIS** serves to match currently available commercia
 >-Your answer was sufficient in length.
 >-You included identifying information for the organizations you worked for.
 >-The sentiment of your response matches the question asked.
->Sample answer: "While I worked on a team at Amazon, one of our clients gave me a review that said, "I went above an beyond what was >required to get the project right." That was the best review I have ever got. I think it also describes my attitude towards >customer service in all the jobs I have held before."
+>Sample answer: "While I worked on a team at Amazon, one of our clients gave me a review that said, "I went above an beyond what was required to get the project right." That was the best review I have ever got. I think it also describes my attitude towards customer service in all the jobs I have held before."
 >
 >-----------------------------------------------
 >
 >The graded feedback file has been created for your reference.
+>
 >IRIS: It was really great learning more about you, User Name this is the end of our session.
+>
 >----------------------------
 
 ### Library Dependancies
