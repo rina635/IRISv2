@@ -3,16 +3,20 @@
 
 """
 Final Assignment: Team 3 - Rafeef Baamer, Ashish Hingle, Rina Lidder, & Andy Nguyen
+
 Description: IRIS (short for INSTRUCTIVE RESPONSE INTERVIEW SIMULATOR) is a chatbot solution that primarily serves as an interview simulator to help users
 practice interview questions in a broad context. This project aims to implement the solution as an extension to the ELIZA model, described as the first chatbot
 system (Weizenbaum 1976). It is primarily designed for students, but any professional can use the service to practice common interview questions and receive
 feedback based on their responses. After the practice session, the chatbot will provide the user a rating score of how they did and describe some aspects that
 can be improved.
+
 This file is the initial file used to receive user input. To score user input, please use feedback.py.
+
 The main goals with IRIS were to:
 - Create a model that can preprocess, algorithmically-process, and generate sentences. 
 - Provide real-time responses to replicate a typical in-person interview. 
 - Provide meaningful feedback to the user.
+
 Usage Instructions:
 1) Run the iris.py file
 2) Enter user name on prompt
@@ -20,9 +24,12 @@ Usage Instructions:
 4) Read through the question and enter the response
 5) After all questions are answered, or program is terminated, use the associated feedback.py file to score the responses
 'HELP' can be used for additional information, and 'END SESSION' can be used to terminate the program early.
+
 Logic:
+    
 External Library dependencies:
-NLTK, Pandas 
+NLTK, Pandas  
+
 Resources used for this lab come from the materials provided in the AIT 590 course materials.
 - [1] Lecture powerpoints (AIT 590)
 - [2] Stanford University Prof. Dan Jurafsky's Video Lectures (https://www.youtube.com/watch?v=zQ6gzQ5YZ8o)
@@ -33,6 +40,72 @@ Resources used for this lab come from the materials provided in the AIT 590 cour
 - [7] Logging files: https://stackoverflow.com/questions/38409450/logging-to-python-file-doesnt-overwrite-file-when-using-the-mode-w-argument-t
 - [8] Logging files: https://www.youtube.com/watch?v=-ARI4Cz-awo&t=616s
 - [9] 2 second delay - https://www.guru99.com/python-time-sleep-delay.html
+
+
+------------------------------
+Example Output:
+IRIS: Good afternoon, I am IRIS the Instructive Response Interview Simulator. Here to help you prepare for your next interview!
+
+Before we begin, what is your name?
+User Name
+IRIS: Nice to meet you, User Name! To end the session, type "END SESSION". For help, type "HELP".
+
+IRIS: Is this your first time interacting with me?
+Type "Yes" or "No"
+Yes
+
+IRIS: Welcome! My job here is to help you practice your interview skills. Here are the instructions to interact with me:
+1) Choose the number of questions (5 - 10 questions).
+2) Answer each question within 2 minutes.
+3) After you have completed your session, use the feedback.py file to score your responses.
+Some information to help you succeed with your preperation:
+- The goal of interacting with me is to ensure you're able to answer the questions in the best way you can.
+- You should discuss specific experiences and details, including names of companies, organizations and supervisors.
+- Express your past experiences in detail and use descriptive language. Aim for at least 3 full sentences.
+- I will allow you to submit a response even if you exceed the 2-minute time limit. However, this will affect your score.
+- Any blank responses will not be graded.
+
+Let's get started!
+
+----------------------
+How many questions would you like for today? 
+Please select a number between 5 and 10.
+
+5
+
+IRIS: The category is: Interactions
+IRIS: Question 1:  Tell me about the best review you’ve ever gotten from a customer.
+
+User Name: While I worked on a team at George's Ice-cream Parlor, one of our clients gave me a review that said, "I went above an beyond what was required to get the project right." That was the best review I have ever got. I think it also describes my attitude towards customer service in all the jobs I have held before.
+
+IRIS: The category is: Teamwork
+IRIS: Question 2:  What would you do if your team was waiting on another department dragging their heels?
+
+User Name: END SESSION
+
+Would you like to run feedback now? Please respond with "Yes" or "No"(You can manually run feedback later if you say no now.) 
+Yes
+IRIS FEEDBACK
+Generated on: May 01, 2020 at 12:00
+
+-----------------------------------------------
+
+Question 1:  Tell me about the best review you’ve ever gotten from a customer.
+Answer 1: While I worked on a team at Amazon, one of our clients gave me a review that said, "I went above an beyond what was required to get the project right." That was the best review I have ever got. I think it also describes my attitude towards customer service in all the jobs I have held before.
+
+Score: 4/4
+Detailed Feedback: 
+-You answered within 2 minutes.
+-Your answer was sufficient in length.
+-You included identifying information for the organizations you worked for.
+-The sentiment of your response matches the question asked.
+Sample answer: "While I worked on a team at Amazon, one of our clients gave me a review that said, "I went above an beyond what was required to get the project right." That was the best review I have ever got. I think it also describes my attitude towards customer service in all the jobs I have held before."
+
+-----------------------------------------------
+
+The graded feedback file has been created for your reference.
+IRIS: It was really great learning more about you, User Name this is the end of our session.
+----------------------------
 """
 # import and initialize libraries
 import random, re , os, sys, logging, time
@@ -77,8 +150,6 @@ def start_conversation():
     print('{}{}, I am {} the Instructive Response Interview Simulator. Here to help you prepare for your next interview!'
           .format(bot_formatted_name, greeting(), bot_name))
     
-
-
     # check if name is empty or not String before contnuing, if so do not move forward until a name is input
     while True:
         name = input("Before we begin, what is your name?\n")
@@ -86,7 +157,6 @@ def start_conversation():
             print("Please enter a valid name that must be string")
             continue
         break
-
 
     print(bot_formatted_name + 'Nice to meet you, {}! To end the session, type "END SESSION". For help, type "HELP".'.format(name))  
     # ask if user's has used IRIS before
@@ -188,20 +258,18 @@ userName = start_conversation()
 user_formatted_name = userName + ': '
 
 # validates integers only and display a message anything else is entered 
-
 while True:
-    print("How many questions would you like for today? \nPlease select a number between 5 and 10.\n")
+    print("How many questions would you like for today? \nPlease select a number between 5 and 10.")
     n = input()
     try:
         n = int(n)
     except:
-        print("please enter a numeric digit")
+        print("Please enter a numeric digit.")
         continue
     if n < 5 or n >10:
-        print("Invalid number of questions. Please select a number between 5 and 10")
+        print("Invalid number of questions. Please select a number between 5 and 10.")
         continue
     break
-
 
 # interview session will continue until the number of questions has been reached    
 while question_counter < n: 
@@ -215,7 +283,7 @@ while question_counter < n:
     print('\n{}The category is: {}'.format(bot_formatted_name, category))
     print('{}Question {}: {}'.format(bot_formatted_name, question_counter, question))
     
-    # start timining how long user takes to respond after question has been printed out.
+    # start timining how long user takes to respond after question has been printed out
     th = Thread(target = idle_check)
     th.daemon = True
     th.start()
@@ -226,7 +294,7 @@ while question_counter < n:
 
     # takes user's input
     response = input(user_formatted_name)
-    #logging user's response into log file without their name
+    # logging user's response into log file without their name
     log_response = logging.debug('{}'.format(response))
 
     if response:
@@ -245,11 +313,21 @@ while question_counter < n:
             break
     else:
         print('IRIS: You did not answer the question. I will move to the next question')
-   
+
+# ask if user would like to run feedback now 
 response = input('Would you like to run feedback now? Please respond with "Yes" or "No"(You can manually run feedback later if you say no now.) \n').lower()
+
+# validate response, if anything else submitted ask again
+while not (response.lower() == 'yes' or response.lower() == 'no'):
+     response = input(bot_formatted_name + 'Invalid response. I need to know if you would like to run feedback now? Type \'Yes\' or \'No\'.\n') 
+
+# if yes, run feedback.py and display feedback results
 if response == 'yes':
     exec(open('feedback.py').read())
-#Once question limit is reached/user ends session , will output this:
-print('{}It was really great learning more about you, {} this is the end of our session.'.format(bot_formatted_name, userName))
+
+# Once question limit is reached/user ends session , will output this:
+print('{}It was really great learning more about you, {}. This is the end of our session.'.format(bot_formatted_name, userName))
+
+# close handler and exsit system
 handler.close()
 sys.exit()
