@@ -25,7 +25,26 @@ Usage Instructions:
 5) After all questions are answered, or program is terminated, use the associated feedback.py file to score the responses
 'HELP' can be used for additional information, and 'END SESSION' can be used to terminate the program early.
 
-Logic:
+Program Logic IRIS.py
+1. Load IRIS and all libraries
+2. Present instructions for using IRIS
+3. Ask user for their name
+4. Choose the number of questions (5 - 10 questions) then loop through 5 and 6 for the number of questions
+5. Allow user to respone to each question
+6. Highlight any responses that look longer than 2 minutes
+7. Log file with all questions, and responses for feedback.py to use
+
+Program Logic feedback.py
+1. Retrieve and load log file saved by IRIS
+2. Pre-process the questions and responses
+3. Evaluate each response per criteria
+	a. Time - The user answered within 90 seconds
+	b. Length of Response - The response is at least 3 sentences long
+	c. Named Entity Recognition	- Response mentions person, organization, or location within response
+	d. Sentiment Analysis - Response sentiment matches or is better than the question's sentiment
+4. Calculate final score based on evaluation
+5. Save a text file for user review
+
     
 External Library dependencies:
 NLTK, Pandas  
@@ -43,7 +62,7 @@ Resources used for this lab come from the materials provided in the AIT 590 cour
 
 
 ------------------------------
-Example Output:
+Example iris.py:
 IRIS: Good afternoon, I am IRIS the Instructive Response Interview Simulator. Here to help you prepare for your next interview!
 
 Before we begin, what is your name?
@@ -83,8 +102,7 @@ IRIS: Question 2:  What would you do if your team was waiting on another departm
 
 User Name: END SESSION
 
-Would you like to run feedback now? Please respond with "Yes" or "No"(You can manually run feedback later if you say no now.) 
-Yes
+Example feedback.py
 IRIS FEEDBACK
 Generated on: May 01, 2020 at 12:00
 
@@ -113,7 +131,6 @@ import pandas as pd
 from datetime import datetime
 from threading import Thread
 import nltk
-from nltk.corpus import words
 
 # creates a log file of interview session, will rewrite the log file every time code executed.
 # code referenced from source [7] and [8]
@@ -224,20 +241,6 @@ def idle_check():
     #Time exceeded character won't print to console but will be logged.
     x = '*'
     logging.debug(x) 
-
-'''
-def handle_nonesense(answer):
-    token_answer = nltk.word_tokenize(answer)
-    for i in token_answer:
-        if i not in words.words():
-            #print("Please provide answer with real words")
-            return False 
-    return True
-'''
-
-'''----------------------------------------------
- start of code execution
-----------------------------------------------'''
 
 # initialize the response and counter variables
 response = ''
