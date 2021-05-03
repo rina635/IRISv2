@@ -19,11 +19,8 @@ Usage Instructions:
 4) Read through the question and enter the response
 5) After all questions are answered, or program is terminated, use the associated feedback.py file to score the responses
 
-Logic:
-    
-
 External Library dependencies:
-NLTK, Pandas 
+NLTK, NLTK VADER Corpus, Pandas, spaCy, numpy
 
 Resources used for this lab come from the materials provided in the AIT 590 course materials.
 - [1] Lecture powerpoints (AIT 590)
@@ -41,6 +38,26 @@ Resources used for this lab come from the materials provided in the AIT 590 cour
 - [13] Removing specific characters from a list: https://stackoverflow.com/questions/3416401/removing-elements-from-a-list-containing-specific-characters
 - [14] Conditionally update dataframe: #https://stackoverflow.com/questions/37976823/how-to-conditionally-update-dataframe-column-in-pandas-based-on-list
 - [15] NLTK tokenizer example: #https://stackoverflow.com/questions/15547409/how-to-get-rid-of-punctuation-using-nltk-tokenizer   
+
+Example Output:
+-----------------------------------------------
+IRIS FEEDBACK
+Generated on: May 01, 2020 at 12:00
+
+-----------------------------------------------
+
+Question 1:  Tell me about the best review you’ve ever gotten from a customer.
+Answer 1: While I worked on a team at Amazon, one of our clients gave me a review that said, "I went above an beyond what was required to get the project right." That was the best review I have ever got. I think it also describes my attitude towards customer service in all the jobs I have held before.
+
+Score: 4/4
+Detailed Feedback: 
+-You answered within 2 minutes.
+-Your answer was sufficient in length.
+-You included identifying information for the organizations you worked for.
+-The sentiment of your response matches the question asked.
+Sample answer: "While I worked on a team at Amazon, one of our clients gave me a review that said, "I went above an beyond what was required to get the project right." That was the best review I have ever got. I think it also describes my attitude towards customer service in all the jobs I have held before."
+
+-----------------------------------------------
 
 """
 # import and initialize libraries
@@ -416,8 +433,9 @@ else:
     print('The graded feedback file has been created for your reference.')
     
 # save the feedback to a text file.
-date = date.today()
-date_string = date.strftime("%b-%d-%Y")
-f = open('feedback/feedback-' + date_string + '.txt', 'w', encoding='utf-8')
+current_date = now.strftime("%m-%d-%y")
+current_time = now.strftime('%I-%M-%S')
+
+f = open('feedback/feedback_' + current_date + '_' + current_time + '.txt', 'w', encoding='utf-8')
 f.write(compl_feedback)
 f.close()
