@@ -319,7 +319,6 @@ while question_counter < n:
    
 #Once question limit is reached/user ends session , will output this:
 print('{}It was really great learning more about you, {} this is the end of our session.'.format(bot_formatted_name, userName))
-=======
 
 # close handler and exsit system
 handler.close()
