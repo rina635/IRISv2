@@ -246,9 +246,6 @@ while question_counter < n:
     else:
         print('IRIS: You did not answer the question. I will move to the next question')
    
-response = input('Would you like to run feedback now? Please respond with "Yes" or "No"(You can manually run feedback later if you say no now.) \n').lower()
-if response == 'yes':
-    exec(open('feedback.py').read())
 #Once question limit is reached/user ends session , will output this:
 print('{}It was really great learning more about you, {} this is the end of our session.'.format(bot_formatted_name, userName))
 handler.close()
