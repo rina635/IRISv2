@@ -57,7 +57,9 @@ Resources used for this lab come from the materials provided in the AIT 590 cour
 - [12] Searching for a string: https://stackoverflow.com/questions/3675144/regex-error-nothing-to-repeat  
 - [13] Removing specific characters from a list: https://stackoverflow.com/questions/3416401/removing-elements-from-a-list-containing-specific-characters
 - [14] Conditionally update dataframe: #https://stackoverflow.com/questions/37976823/how-to-conditionally-update-dataframe-column-in-pandas-based-on-list
-- [15] NLTK tokenizer example: #https://stackoverflow.com/questions/15547409/how-to-get-rid-of-punctuation-using-nltk-tokenizer   
+- [15] NLTK tokenizer example: #https://stackoverflow.com/questions/15547409/how-to-get-rid-of-punctuation-using-nltk-tokenizer  
+- [16] Creating a directory if it does not exist:
+https://www.tutorialspoint.com/How-can-I-create-a-directory-if-it-does-not-exist-using-Python 
 
 Example Output:
 -----------------------------------------------
@@ -248,6 +250,11 @@ def senti_analysis(dataframe):
 '''----------------------------------------------
  start of code execution
 ----------------------------------------------'''
+try:
+    os.makedirs('feedback')
+except OSError as e:
+    if e.errno != errno.EEXIST:
+        raise
 
 # Load sample answers for feedback
 abspath = os.path.abspath(sys.argv[0])

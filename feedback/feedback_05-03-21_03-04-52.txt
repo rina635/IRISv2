@@ -1,0 +1,79 @@
+IRIS FEEDBACK
+Generated on: May 03, 2021 at 15:04
+
+-----------------------------------------------
+
+Question 1:  You have to make an important decision in a short time constraint; how do you make it?
+Answer 1: When I was a Software Engineer for Microsoft, there were several tight deadlines that we had to make. In order to adequately meet these deadlines, I put in overtime in order to accomplish tasks in a timely manner, which allowed my team to work more effectively on the subsequent tasks. This allowed us to deliver our projects within the deadlines and exceed our clients' expectations.
+
+Score: 4/4
+Detailed Feedback: 
+-You answered within 2 minutes.
+-Your answer was sufficient in length.
+-You included identifying information for the organizations you worked for.
+-The sentiment of your response matches the question asked.
+
+-----------------------------------------------
+
+Question 2:  What would you choose if you had to pick between a professional goal and a personal goal?
+Answer 2: I would pick a professional goal.
+
+Score: 2/4
+Detailed Feedback: 
+-You answered within 2 minutes.
+-Your answer is too short.
+ You should express your answer with more detail. A good answer will be atleast 3 sentences and 45 words long.
+-You did not include identifying information, such as company, organization, or supervisor names.
+ Including these details can give the interviewer a better understanding of your experience.
+-The sentiment of your response matches the question asked.
+Sample answer: "I believe both personal and professional goals have their place, and can go hand in hand. For example, while I was working at Edifier, 1 of my professional goals were to create an actionable video for my department. To improve my video editing skills, I started creating YouTube videos in my free time."
+
+-----------------------------------------------
+
+Question 3:  Tell me about the most difficult decision you’ve had to make on the job.
+Answer 3: I had to decide whether or not to report a friend for a work code violation.
+
+Score: 0/4
+Detailed Feedback: 
+-You took too long to answer.
+ You won't have too much time to think of your answer, so keep practicing with new questions.
+-Your answer is too short.
+ You should express your answer with more detail. A good answer will be atleast 3 sentences and 45 words long.
+-You did not include identifying information, such as company, organization, or supervisor names.
+ Including these details can give the interviewer a better understanding of your experience.
+-The sentiment of your response does not match the answer.
+ Try to be more positive in your response, as this will leave a better impression.
+Sample answer: "The most difficult decision I made was scrapping a project we had all spent much time on as a team. I created a roadmap for future the future development of a product we were working on, and in doing so realized that the technological drift was significant. In addressing all the issues, we started making something that tackled too many issues."
+
+-----------------------------------------------
+
+Question 4:  Have you ever had to give a presentation, and how did it go?
+Answer 4: Yes, it went very well.
+
+Score: 2/4
+Detailed Feedback: 
+-You answered within 2 minutes.
+-Your answer is too short.
+ You should express your answer with more detail. A good answer will be atleast 3 sentences and 45 words long.
+-You did not include identifying information, such as company, organization, or supervisor names.
+ Including these details can give the interviewer a better understanding of your experience.
+-The sentiment of your response matches the question asked.
+Sample answer: "Yes, the presentation was about the privacy concerns on social media websites. I included multiple facts about the data breach and hackers who had access to thousands of users. Then I gave my recommendation on what is the best ways to protect your information. "
+
+-----------------------------------------------
+
+Question 5:  Have you ever calmed down an angry customer? How?
+Answer 5: No
+
+Score: 1/4
+Detailed Feedback: 
+-You answered within 2 minutes.
+-Your answer is too short.
+ You should express your answer with more detail. A good answer will be atleast 3 sentences and 45 words long.
+-You did not include identifying information, such as company, organization, or supervisor names.
+ Including these details can give the interviewer a better understanding of your experience.
+-The sentiment of your response does not match the answer.
+ Try to be more positive in your response, as this will leave a better impression.
+Sample answer: "This has not had this happen during my time as a Customer Representative. At the end of the day, I have found that upset customers just want to have their problems solved. I work to solve the issue, and I have not had any issues diffusing the situation."
+
+-----------------------------------------------
