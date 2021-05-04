@@ -89,6 +89,7 @@ from nltk import sent_tokenize, word_tokenize
 import numpy as np
 from datetime import datetime, date
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+import pathlib
 
 nlp = spacy.load('en_core_web_sm')
 
@@ -250,11 +251,7 @@ def senti_analysis(dataframe):
 '''----------------------------------------------
  start of code execution
 ----------------------------------------------'''
-try:
-    os.makedirs('feedback')
-except OSError as e:
-    if e.errno != errno.EEXIST:
-        raise
+os.makedirs('feedback/', exist_ok=True)
 
 # Load sample answers for feedback
 abspath = os.path.abspath(sys.argv[0])
