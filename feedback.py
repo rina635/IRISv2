@@ -264,7 +264,7 @@ with open('questions_answers.csv', encoding='utf8', errors='ignore') as f:
     reader = csv.reader(f)
     i = next(reader)
     rest = list(reader)
-    all_questions_df = pd.DataFrame(rest, columns = ['index', 'question', 'category', 'sample'])
+    all_questions_df = pd.DataFrame(rest, columns = ['question', 'category', 'sample'])
 
 # Load log from IRIS.py as a list
 # code referenced from source [7], [8], and [9]
