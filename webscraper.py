@@ -25,7 +25,7 @@ whole_section.find('p')
 all_text = whole_section.getText()
 split_text = all_text.split('\n')
 
-#Uses variable q regex to locate where in the text there is a digi followed by a capital letter
+#Uses variable q regex to locate where in the text there is a digit followed by a capital letter
 #Using the regex to extract the questions from the webpage
 q = re.compile("^\d+.\s[A-Z]")
 
@@ -40,14 +40,6 @@ len(df_leadership)
 
     
 df_leadership['Category'] = lead_head
-#if want short index use this:
-'''
-l_index = []
-for i in range(0, len(df_leadership)):
-    index = ('L{}'.format(i+1))
-    l_index.append(index)
-#df_leadership['q_index'] = l_index
-'''
 
 #Gathers all questions in Teamwork Category and creates a df
 teamwork =  split_text[90:114]
@@ -56,14 +48,7 @@ team_qlist = list(filter(q.match, teamwork))
 
 df_team = pd.DataFrame(team_qlist, columns = ['Question'])
 df_team['Category'] = team_head
-'''
-t_index = []
-for i in range(0, len(df_team)):
-    index = ('T{}'.format(i+1))
-    t_index.append(index)
 
-df_team['q_index'] = t_index
-'''
 #Gathers all questions in Goals and Ambition category and creates a df
 goals =  split_text[114:140]
 goals_head = split_text[114]
@@ -72,13 +57,7 @@ goals_qlist = list(filter(q.match, goals))
 df_goals = pd.DataFrame(goals_qlist, columns = ['Question'])
 df_goals['Category'] = goals_head
 
-'''g_index = []
-for i in range(0, len(df_goals)):
-    index = ('G{}'.format(i+1))
-    g_index.append(index)
 
-df_team['q_index'] = g_index
-'''
 #Gathers all questions in Stress Management category and creates a df
 stress =  split_text[140:175]
 stress_head = split_text[140]
@@ -95,15 +74,6 @@ ethics_qlist = list(filter(q.match, ethics))
 df_ethics = pd.DataFrame(ethics_qlist, columns = ['Question'])
 df_ethics['Category'] = ethics_head
 
-'''
-Previously used Resume Item category - Ruling out for now.
-resume =  split_text[199:218]
-resume_head = split_text[199]
-resume_qlist = list(filter(q.match, resume))
-
-df_resume = pd.DataFrame(resume_qlist, columns = ['Question'])
-df_resume['Category'] = resume_head
-'''
 
 #Gathers all questions in Interactions category and creates a df
 interact =  split_text[218:240]
@@ -137,47 +107,4 @@ result['Category'] = result['Category'].str.replace(r'Questions', '')
 #Export the final dataframe as csv.
 abspath = os.path.abspath(sys.argv[0])
 dname = os.path.dirname(abspath) + '/questions.csv'
-result.to_csv(dname)
-
-
-'''
-
-OLD CODE
-import re
-
-r = ("[^.]* Questions about [^.]*\.")
-
-#https://stackoverflow.com/questions/3640359/regular-expressions-search-in-list
-r = re.compile("\w*Questions")
-newlist = list(filter(r.search, split_text))
-
-misc = re.compile("Miscellaneous")
-misclist = list(filter(misc.match, split_text))
-newlist.append(misclist)
-
-from re import match
-#https://stackoverflow.com/questions/3640359/regular-expressions-search-in-list
-filtered_values = list(filter(lambda v: match('Miscellaneous', v), split_text))
-filtered_values2 = list(filter(lambda v: match('Questions', v), split_text))
-
-categories = filtered_values + filtered_values2
-set(categories)
-
-#Questions:
-q = re.compile("^\d+.\s[A-Z]")
-question_list = list(filter(q.match, split_text))
-
-from pandas import DataFrame
-df = DataFrame (question_list,columns=['Question'])
-print(df)
-
-
-
-#Removing digits from list of questions:
-#https://stackoverflow.com/questions/44859191/split-string-in-python-to-get-one-value    
-clean_q = []
-for i in range(0, len(question_list)):
-    questions = question_list[i].split('. ')[1:] #Get everything after the digits.
-    clean_q.append(questions)
-
-        '''
+result.to_csv(dname, encoding="utf-8", index=False)
