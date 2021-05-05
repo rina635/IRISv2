@@ -1,10 +1,30 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Tue Mar 23 16:35:32 2021
+Final Assignment: Team 3 - Rafeef Baamer, Ashish Hingle, Rina Lidder, & Andy Nguyen
+Description: IRIS (short for INSTRUCTIVE RESPONSE INTERVIEW SIMULATOR) is a chatbot solution that primarily serves as an interview simulator to help users
+practice interview questions in a broad context. This project aims to implement the solution as an extension to the ELIZA model, described as the first chatbot
+system (Weizenbaum 1976). It is primarily designed for students, but any professional can use the service to practice common interview questions and receive
+feedback based on their responses. After the practice session, the chatbot will provide the user a rating score of how they did and describe some aspects that
+can be improved.  
 
-@author: Rina
+This file is to extract the behavioral-interview questions for IRIS
+
+Program Logic webscraper.py:
+    1. Load the url
+    2. Parses out the relevant text from the HTML tags
+    3. Creates 7 individual dataframes by indexing the website text
+       for each section.
+    4. Create one final dataframe by merging each category's dataframe
+       together.
+    5. Export the csv file containing the questions.
+    
+Resources used for this code come from:
+    - [1] https://stackoverflow.com/questions/28396036/python-3-4-urllib-request-error-http-403
+    - [2] https://stackoverflow.com/questions/13682044/remove-unwanted-parts-from-strings-in-a-column
+    
 """
+#import libraries.
 import bs4, urllib.request
 import numpy as np
 from urllib.request import Request, urlopen
@@ -12,7 +32,7 @@ from bs4 import BeautifulSoup as soup
 import csv, sys, os, re
 import pandas as pd
 
-#https://stackoverflow.com/questions/28396036/python-3-4-urllib-request-error-http-403
+
 #Attach the url for our career questions data source
 url = 'https://www.contractrecruiter.com/list-behavioral-interview-questions/'
 
@@ -22,23 +42,25 @@ html = urllib.request.urlopen(req).read()
 page_soup = soup(html, 'html.parser')
 whole_section = page_soup.find('div',{'class':'fl-post-content clearfix'})
 whole_section.find('p')
+#only getting the text from the paragraph no HTML tags.
 all_text = whole_section.getText()
+#break apart each line.
 split_text = all_text.split('\n')
 
 #Uses variable q regex to locate where in the text there is a digit followed by a capital letter
-#Using the regex to extract the questions from the webpage
+#Specifically used to identify where the question text is.
 q = re.compile("^\d+.\s[A-Z]")
 
 #Gather all questions in Leadership Category and create a df
-
+#Using indexing to gather the questions
 leadership =  split_text[63:90]
+#Using indexing to gather the category name.
 lead_head = split_text[63]
+#Create a list of just the question by searching using q
 lead_qlist = list(filter(q.match, leadership))
 
+#Creates the leadership dataframe with the questions and category name.
 df_leadership = pd.DataFrame(lead_qlist, columns = ['Question'])
-len(df_leadership)
-
-    
 df_leadership['Category'] = lead_head
 
 #Gathers all questions in Teamwork Category and creates a df
@@ -97,14 +119,13 @@ df_misc['Category'] = misc_head
 frames = [df_leadership, df_team, df_stress, df_goals, df_ethics, df_interact, df_misc]
 result = pd.concat(frames)
 
-#Remove numbers from questions     
-#https://stackoverflow.com/questions/13682044/remove-unwanted-parts-from-strings-in-a-column
+#Remove numbers from questions 
 result['Question'] = result['Question'].str.replace(r'\d\d*\.', '')       
 #remove the 'Questions about' phrase from each of the category labels
 result['Category'] = result['Category'].str.replace(r'Questions about ', '')
-result['Category'] = result['Category'].str.replace(r'Questions', '')
 
-#Export the final dataframe as csv.
+
+#Export the final dataframe as csv without the index.
 abspath = os.path.abspath(sys.argv[0])
-dname = os.path.dirname(abspath) + '/questions.csv'
+dname = os.path.dirname(abspath) + '/questions3333.csv'
 result.to_csv(dname, encoding="utf-8", index=False)
