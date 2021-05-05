@@ -403,20 +403,11 @@ for i in range(0, len(ques_holder)):
 -The sentiment of your response does not match the answer.
  Try to be more positive in your response, as this will leave a better impression.'''
 
-# create a dataframe of questions where user got less than 2/4
-low_score_df = interview_df.loc[(interview_df.score <= 2)]
 
-# Add sample answers for low scored questions
-low_sample_df = pd.merge(low_score_df, all_questions_df[['question','sample']], left_on='question', 
-                        right_on='question', how ='inner')
-# merge low scores with original dataframe, anything that do
-final_df = pd.merge(interview_df, low_sample_df, on= ['question', 'answers'], how = 'outer')   
- 
 # merge question and add sample answer into the main dataframe
 interview_df = pd.merge(interview_df, all_questions_df[['question','sample']], left_on='question', right_on='question', how ='inner')
 
 # Remove answers where user requested help
-#interview_df = interview_df[(interview_df.answers != 'HELP') & (interview_df.answers != 'help')& (interview_df.answers != 'Help')] 
 interview_df = interview_df[~interview_df.answers.str.contains("HELP", na=False, case=False)]
 
 # Compile the feedback to be printed and saved to log
