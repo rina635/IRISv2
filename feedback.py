@@ -42,7 +42,7 @@ Program Logic feedback.py
 External Library dependencies:
 NLTK, NLTK VADER Corpus, Pandas, spaCy, numpy
 
-Resources used for this lab come from the materials provided in the AIT 590 course materials.
+Resources used for this project come from the materials provided in the AIT 590 course materials.
 - [1] Lecture powerpoints (AIT 590)
 - [2] Stanford University Prof. Dan Jurafsky's Video Lectures (https://www.youtube.com/watch?v=zQ6gzQ5YZ8o)
 - [3] Joe James Python: NLTK video series (https://www.youtube.com/watch?v=RYgqWufzbA8)
