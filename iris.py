@@ -18,6 +18,12 @@ The main goals with IRIS were to:
 - Give a score based on the user's response.  
 - Generate feedback based upon the interview session and the score. 
 
+The main objectives of IRIS is to:
+    -Create a model that can prompt users to interview questions and receive their input. 
+    -Provide real-time responses to replicate a typical in-person interview. 
+    -Give a score based on the user's response.  
+    -Generate feedback based upon the interview session and the score. 
+    
 Usage Instructions:
 1) Run the iris.py file
 2) Enter user name on prompt
