@@ -13,9 +13,10 @@ can be improved.
 This file is the initial file used to receive user input. To score user input, please use feedback.py.
 
 The main goals with IRIS were to:
-- Create a model that can preprocess, algorithmically-process, and generate sentences. 
+- Create a model that can prompt users to interview questions and receive their input. 
 - Provide real-time responses to replicate a typical in-person interview. 
-- Provide meaningful feedback to the user.
+- Give a score based on the user's response.  
+- Generate feedback based upon the interview session and the score. 
 
 Usage Instructions:
 1) Run the iris.py file
